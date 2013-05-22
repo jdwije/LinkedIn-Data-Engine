@@ -26,7 +26,7 @@ class Linkedin extends CI_Model {
 		
 		$store   = OAuthStore::instance('MySQL', $options);
 		
-		$servers = $store->listServers($optional_filter_text, $user_id);
+		$servers = $store->listServers(1);
 
 	}
 
