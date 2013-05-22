@@ -92,7 +92,7 @@ class Linkedin extends CI_Model {
 		   $uri = $callback_uri . '&oauth_token='.rawurlencode($token['token']);
 		}
 
-		# header('Location: '. $uri);
+		header('Location: '. $uri);
 		exit();
 	}
 
