@@ -3,45 +3,46 @@
 /* This is the controller for linked in application logic */
 class Linkedin extends CI_Model {
 
+	private $db_opts;
+
 	public function __construct()
 	{
 		$this->load->database();
 		# include libs
 		include_once realpath("resources/libs/oauth-php/library/OAuthStore.php");
 		include_once realpath("resources/libs/oauth-php/library/OAuthRequester.php");
+		
+		# set db opts
+		$this->db_opts = $options = array(
+				'server' => 'localhost', 
+				'username' => 'root',
+                'password' => 'Arz1|9KaF6[yg!6',  
+                'database' => 'lde'
+            );
 	}
 
 	public function authorize_new_user() {
-		# $this->do_oauth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
-		$this->test_oauth();
+		$this->do_oauth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
+		# $this->test_oauth();
 	}
 
-	private function test_oauth() {
-			$options = array(
-					'server' => 'localhost', 
-					'username' => 'root',
-	                'password' => 'Arz1|9KaF6[yg!6',  
-	                'database' => 'lde'
-                );
-		
-		$store   = OAuthStore::instance('MySQL', $options);
-		
+	private function get_oauth_servers() {
+		$store   = OAuthStore::instance('MySQL', $this->db_opts);
 		$servers = $store->listServers('', 1);
-		print_r($servers);
+		return $servers;
 	}
 
-	private function build_oauth_store () {
-		# build oauth store
-		$options = array(
-					'server' => 'localhost', 
-					'username' => 'root',
-	                'password' => 'Arz1|9KaF6[yg!6',  
-	                'database' => 'lde'
-                );
-		
-		$store   = OAuthStore::instance('MySQL', $options);
+	private function get_consumer_key ($id) {
+		$servers = $this->get_oauth_servers();
+		$c_key = $servers[ $id - 1 ]['consumer_key'];
+		return $c_key;
+	}
 
-		# add store to connect
+	private function build_oauth_store ($key, $secret) {
+		# build oauth store
+		$store   = OAuthStore::instance('MySQL', $this->db_opts);
+
+		# store user ID
 		$uid = 1;
 
 		# The server description
@@ -59,7 +60,9 @@ class Linkedin extends CI_Model {
 		$consumer_key = $store->updateServer($server, $uid);
 	}
 
-	private function do_oauth($key, $secret) {
+	private function do_oauth($key, $secret, $uid) {
+		# get c key
+		$consumer_key = $this->get_consumer_key();
 
 		// Obtain a request token from the server
 		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
