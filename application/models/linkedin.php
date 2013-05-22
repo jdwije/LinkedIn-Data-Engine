@@ -100,7 +100,15 @@ class Linkedin extends CI_Model {
 		# get post vars
 		$oauth_token = $_GET['oauth_token'];
 		$consumer_key =$this->get_consumer_key(1);
-	    OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
+
+		try
+		{
+		    OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
+		}
+		catch (OAuthException $e)
+		{
+		    var_dump($e);
+		}	
 	}
 
 }
