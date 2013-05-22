@@ -12,13 +12,32 @@ class Linkedin extends CI_Model {
 	}
 
 	public function authorize_new_user() {
-		$this->do_oauth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
+		# $this->do_oauth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
+		$this->test_oauth();
 	}
 
-	private function do_oauth($key, $secret) {		
+	private function test_oauth() {
+			$options = array(
+					'server' => 'localhost', 
+					'username' => 'root',
+	                'password' => 'Arz1|9KaF6[yg!6',  
+	                'database' => 'lde'
+                );
+		
+		$store   = OAuthStore::instance('MySQL', $options);
+		
+		$servers = $store->listServers($optional_filter_text, $user_id);
+
+	}
+
+	private function build_oauth_store () {
 		# build oauth store
-		$options = array('server' => 'localhost', 'username' => 'root',
-                 'password' => 'Arz1|9KaF6[yg!6',  'database' => 'lde');
+		$options = array(
+					'server' => 'localhost', 
+					'username' => 'root',
+	                'password' => 'Arz1|9KaF6[yg!6',  
+	                'database' => 'lde'
+                );
 		
 		$store   = OAuthStore::instance('MySQL', $options);
 
@@ -38,6 +57,9 @@ class Linkedin extends CI_Model {
 
 		# Save the server in the the OAuthStore
 		$consumer_key = $store->updateServer($server, $uid);
+	}
+
+	private function do_oauth($key, $secret) {
 
 		// Obtain a request token from the server
 		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
