@@ -1,3 +1,13 @@
+<!-- Our prominent "take the test now" headliner -->
+<div class="hero-unit">
+  <h1>Philip's Research Thesis</h1>
+  <p>Philips tagline. Something about making a better world. Something about helping the children.</p>
+  <p>
+    <a class="btn btn-primary btn-large" href="<?php echo site_url('participate'); ?>">
+      Participate!
+    </a>
+  </p>
+</div>
 <div class='row-fluid'>
 	<p>This app was designed to help Philip Schneider complete his Master Thesis reseaerch on entrepreneurship.</p>
 	<p>Participating is easy! To join, click the large <i>Participate</i> button above and login with your LinkedIn Account.</p>

@@ -5,6 +5,7 @@ class Linkedin extends CI_Model {
 
 	public function __construct()
 	{
+		parent::__construct();
 		$this->load->database();
 		# include libs
 		include_once realpath("resources/libs/oauth-php/library/OAuthStore.php");
@@ -40,7 +41,6 @@ class Linkedin extends CI_Model {
 			$result = $request->doRequest();
 			
 			$response = $result['body'];
-			var_dump($response);
 		}
 		catch(OAuthException2 $e)
 		{

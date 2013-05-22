@@ -29,14 +29,4 @@
     <!-- some initial related heading stuff -->
     <h1 class='brand'>LinkedIn Data Miner</h1>
     <p class='lead'>Welcome to the LinkedIn Data Mining application!</p>
-    <!-- Our prominent "take the test now" headliner -->
-    <div class="hero-unit">
-      <h1>Philip's Research Thesis</h1>
-      <p>Philips tagline. Something about making a better world. Something about helping the children.</p>
-      <p>
-        <a class="btn btn-primary btn-large" href="<?php echo site_url('participate'); ?>">
-          Participate!
-        </a>
-      </p>
-    </div>
     <!-- Dynamic content begins here -->
