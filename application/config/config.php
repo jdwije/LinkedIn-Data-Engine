@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost/GitHub/LinkedIn-Data-Engine/';
+$config['base_url']	= '54.251.251.190';
 
 /*
 |--------------------------------------------------------------------------
