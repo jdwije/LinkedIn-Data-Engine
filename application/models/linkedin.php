@@ -12,7 +12,7 @@ class Linkedin extends CI_Model {
 	}
 
 	public function authorize_new_user() {
-		$this->do_oauth('9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
+		$this->do_oauth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
 	}
 
 	private function do_oauth($key, $secret) {		
@@ -31,9 +31,9 @@ class Linkedin extends CI_Model {
 		    'consumer_secret' => $secret,
 		    'server_uri' => 'https://www.linkedin.com/',
 		    'signature_methods' => array('HMAC-SHA1', 'PLAINTEXT'),
-		    'request_token_uri' => 'https://www.linkedin.com/uas/oauth2/authorization',
+		    'request_token_uri' => 'https://api.linkedin.com/uas/oauth/requestToken',
 		    'authorize_uri' =>  base_url() . "authenticate",
-		    'access_token_uri' => 'https://www.linkedin.com/uas/oauth2/accessToken'
+		    'access_token_uri' => 'https://api.linkedin.com/uas/oauth/accessToken'
 		);
 
 		# Save the server in the the OAuthStore
