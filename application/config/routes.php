@@ -38,9 +38,8 @@
 |
 */
 
-$route['default_controller'] = "welcome";
-$route['404_override'] = '';
-
+$route['participate'] = 'webapp/authorize';
+$route['default_controller'] = 'webapp/view';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
