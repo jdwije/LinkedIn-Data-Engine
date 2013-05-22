@@ -8,7 +8,8 @@ class Webapp extends CI_Controller {
 	function __construct () {
 		# construct parent
 		parent::__construct();
-		# load required libs
+		# load required libs and models
+		$this->load->model('linkedin');
 		$this->load->helper('url_helper');
 	}
 
@@ -31,9 +32,15 @@ class Webapp extends CI_Controller {
 
 	/* this method kicks off the authorization process so we can fetch the users data */
 	public function authorize() {
-		# load our linked in model and make the call to auth a new user
-		$this->load->model('linkedin');
-		$this->linkedin->authorize_new_user();	
+			# authenticate the new user
+			$this->linkedin->authorize_new_user();	
+	}
+
+	/* redirect function after user has authrnticated */
+	public function authenticated() {
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/thankyou');
+		$this->load->view('templates/footer', $data);
 	}
 
 }
