@@ -40,7 +40,7 @@ class Linkedin extends CI_Model {
 			$result = $request->doRequest();
 			
 			$response = $result['body'];
-			var_dump($response);
+			echo $response;
 		}
 		catch(OAuthException2 $e)
 		{
