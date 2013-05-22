@@ -5,7 +5,7 @@ class Linkedin extends CI_Model {
 
 	public $db_opts;
 
-	public function __construct()
+	function __construct()
 	{
 		$this->load->database();
 		# include libs
@@ -22,7 +22,7 @@ class Linkedin extends CI_Model {
 	}
 
 	public function authorize_new_user() {
-		# $this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
+		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
 		# $this->test_oauth();
 	}
 
@@ -64,7 +64,7 @@ class Linkedin extends CI_Model {
 
 	public function begin_auth($key, $secret, $uid) {
 		# get c key
-		$consumer_key = $key;
+		$consumer_key = $this->get_consumer_key($uid);
 
 		// Obtain a request token from the server
 		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
