@@ -26,21 +26,23 @@ class Linkedin extends CI_Model {
 		# $this->test_oauth();
 	}
 
-	private function get_oauth_servers() {
-		$store   = OAuthStore::instance('MySQL', $this->db_opts);
+	public function get_oauth_servers() {
+		$opts = $this->db_opts;
+		$store = OAuthStore::instance('MySQL', $opts);
 		$servers = $store->listServers('', 1);
 		return $servers;
 	}
 
-	private function get_consumer_key ($id) {
+	public function get_consumer_key ($id) {
 		$servers = $this->get_oauth_servers();
 		$c_key = $servers[ $id - 1 ]['consumer_key'];
 		return $c_key;
 	}
 
-	private function build_oauth_store ($key, $secret) {
+	public function build_oauth_store ($key, $secret) {
 		# build oauth store
-		$store   = OAuthStore::instance('MySQL', $this->db_opts);
+		$opts = $this->db_opts;
+		$store = OAuthStore::instance('MySQL', $opts);
 
 		# store user ID
 		$uid = 1;
@@ -60,7 +62,7 @@ class Linkedin extends CI_Model {
 		$consumer_key = $store->updateServer($server, $uid);
 	}
 
-	private function begin_auth($key, $secret, $uid) {
+	public function begin_auth($key, $secret, $uid) {
 		# get c key
 		$consumer_key = $key;
 
@@ -94,7 +96,7 @@ class Linkedin extends CI_Model {
 		exit();
 	}
 
-	private function verify_auth () {
+	public function verify_auth () {
 		# get post vars
 		$oauth_token = $_GET['oauth_token'];
 		$consumer_key = $_GET['consumer_key'];
