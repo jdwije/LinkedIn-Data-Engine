@@ -62,7 +62,7 @@ class Linkedin extends CI_Model {
 
 	private function do_oauth($key, $secret, $uid) {
 		# get c key
-		$consumer_key = $this->get_consumer_key();
+		$consumer_key = $this->get_consumer_key($uid);
 
 		// Obtain a request token from the server
 		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
