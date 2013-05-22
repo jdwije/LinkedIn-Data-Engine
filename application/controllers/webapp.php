@@ -38,9 +38,9 @@ class Webapp extends CI_Controller {
 
 	/* redirect function after user has authrnticated */
 	public function authenticate() {
-		$this->load->view('templates/header', $data);
-		$this->load->view('pages/thankyou');
-		$this->load->view('templates/footer', $data);
+		$data['page_description'] = "Authenticating your LinkedIn account";
+		$data['page_title'] = "Authenticate";
+		$this->linkedin->verify_auth();
 	}
 
 	public function access_granted() {

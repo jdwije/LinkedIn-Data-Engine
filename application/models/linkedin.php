@@ -22,7 +22,7 @@ class Linkedin extends CI_Model {
 	}
 
 	public function authorize_new_user() {
-		$this->do_oauth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
+		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
 		# $this->test_oauth();
 	}
 
@@ -52,7 +52,7 @@ class Linkedin extends CI_Model {
 		    'server_uri' => 'https://www.linkedin.com/',
 		    'signature_methods' => array('HMAC-SHA1', 'PLAINTEXT'),
 		    'request_token_uri' => 'https://api.linkedin.com/uas/oauth/requestToken',
-		    'authorize_uri' =>  base_url() . "authenticate",
+		    'authorize_uri' =>  base_url() . "index.php/authenticate",
 		    'access_token_uri' => 'https://api.linkedin.com/uas/oauth/accessToken'
 		);
 
@@ -60,9 +60,9 @@ class Linkedin extends CI_Model {
 		$consumer_key = $store->updateServer($server, $uid);
 	}
 
-	private function do_oauth($key, $secret, $uid) {
+	private function begin_auth($key, $secret, $uid) {
 		# get c key
-		$consumer_key = $this->get_consumer_key($uid);
+		$consumer_key = $key;
 
 		// Obtain a request token from the server
 		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
@@ -92,6 +92,16 @@ class Linkedin extends CI_Model {
 
 		header('Location: '.$uri);
 		exit();
+	}
+
+	private function verify_auth () {
+		# get post vars
+		$oauth_token = $_GET['oauth_token'];
+		$consumer_key = $_GET['consumer_key'];
+		$user_id = $_GET['usr_id'];
+
+	    OAuthRequester::requestAccessToken($consumer_key, $oauth_token, $user_id);
+	    
 	}
 
 }
