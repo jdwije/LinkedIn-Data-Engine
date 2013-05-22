@@ -99,13 +99,8 @@ class Linkedin extends CI_Model {
 	public function verify_auth () {
 		# get post vars
 		$oauth_token = $_GET['oauth_token'];
-		$consumer_key = $_GET['consumer_key'];
-		$user_id = $_GET['usr_id'];
-
-	    # OAuthRequester::requestAccessToken($consumer_key, $oauth_token, $user_id);
-		echo $oauth_token . "<br>";
-		echo $consumer_key . "<br>";
-		echo $user_id . "<br>";
+		$consumer_key =$this->get_consumer_key(1);
+	    OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
 	}
 
 }
