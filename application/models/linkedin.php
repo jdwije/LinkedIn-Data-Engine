@@ -90,7 +90,7 @@ class Linkedin extends CI_Model {
 		   $uri = $callback_uri . '&oauth_token='.rawurlencode($token['token']);
 		}
 
-		header('Location: '.$uri);
+		header('Location: '. $uri);
 		exit();
 	}
 
@@ -100,8 +100,10 @@ class Linkedin extends CI_Model {
 		$consumer_key = $_GET['consumer_key'];
 		$user_id = $_GET['usr_id'];
 
-	    OAuthRequester::requestAccessToken($consumer_key, $oauth_token, $user_id);
-	    
+	    # OAuthRequester::requestAccessToken($consumer_key, $oauth_token, $user_id);
+		echo $oauth_token . "<br>";
+		echo $consumer_key . "<br>";
+		echo $user_id . "<br>";
 	}
 
 }
