@@ -19,7 +19,7 @@ class Linkedin extends CI_Model {
 		# set some vars
 		$options = array('consumer_key' => $key, 'consumer_secret' => $secret);
 		$state = 'DCEEFWF45453sdffef424';
-		$redirect_uri = base_url() . "authorized";
+		$redirect_uri = base_url() . "authenticated";
 		$method = "GET";
 		$params = null;
 
@@ -27,7 +27,7 @@ class Linkedin extends CI_Model {
 		OAuthStore::instance("2Leg", $options);
 
 		# build our redirect url
-		$url = "https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=" . $key . "&scope=" . $scope . "&state=" . $state . "&redirect_uri=" . $redirect_uri;
+		$url = "https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=" . $key . "&state=" . $state . "&redirect_uri=" . $redirect_uri;
 
 		try
 		{
