@@ -16,36 +16,56 @@ class Linkedin extends CI_Model {
 	}
 
 	private function do_oauth($key, $secret) {		
-		# set some vars
-		$options = array('consumer_key' => $key, 'consumer_secret' => $secret);
-		$state = 'DCEEFWF45453sdffef424';
-		$redirect_uri = base_url() . "authenticated";
-		$method = "GET";
-		$params = null;
+		# build oauth store
+		$options = array('server' => 'localhost', 'username' => 'philiapp',
+                 'password' => 'RSpjwdV5ZtTMee4m',  'database' => 'lde');
+		$store   = OAuthStore::instance('MySQL', $options);
 
-		# create new store
-		OAuthStore::instance("2Leg", $options);
+		# add store to connect
+		$uid = 1;
 
-		# build our redirect url
-		$url = "https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=" . $key . "&state=" . $state . "&redirect_uri=" . $redirect_uri;
+		# The server description
+		$server = array(
+		    'consumer_key' => $key,
+		    'consumer_secret' => $secret,
+		    'server_uri' => 'https://www.linkedin.com/',
+		    'signature_methods' => array('HMAC-SHA1', 'PLAINTEXT'),
+		    'request_token_uri' => 'https://www.linkedin.com/uas/oauth2/authorization',
+		    'authorize_uri' =>  base_url() . "authenticate",
+		    'access_token_uri' => 'https://www.linkedin.com/uas/oauth2/accessToken'
+		);
 
-		try
+		# Save the server in the the OAuthStore
+		$consumer_key = $store->updateServer($server, $uid);
+
+		// Obtain a request token from the server
+		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
+
+		// Callback to our (consumer) site, will be called when the user finished the authorization at the server
+		$callback_uri = base_url() . 'access_granted?consumer_key='.rawurlencode($consumer_key).'&usr_id='.intval($uid);
+
+		// Now redirect to the autorization uri and get us authorized
+		if (!empty($token['authorize_uri']))
 		{
-			// Obtain a request object for the request we want to make
-			$request = new OAuthRequester($url, $method, $params);
-
-			// Sign the request, perform a curl request and return the results, 
-			// throws OAuthException2 exception on an error
-			// $result is an array of the form: array ('code'=>int, 'headers'=>array(), 'body'=>string)
-			$result = $request->doRequest();
-			
-			$response = $result['body'];
-			echo $response;
+		    // Redirect to the server, add a callback to our server
+		    if (strpos($token['authorize_uri'], '?'))
+		    {
+		        $uri = $token['authorize_uri'] . '&'; 
+		    }
+		    else
+		    {
+		        $uri = $token['authorize_uri'] . '?'; 
+		    }
+		    $uri .= 'oauth_token='.rawurlencode($token['token']).'&oauth_callback='.rawurlencode($callback_uri);
 		}
-		catch(OAuthException2 $e)
+		else
 		{
-			print_r($e);
+		    // No authorization uri, assume we are authorized, exchange request token for access token
+		   $uri = $callback_uri . '&oauth_token='.rawurlencode($token['token']);
 		}
+
+		header('Location: '.$uri);
+		exit();
 	}
 
 }

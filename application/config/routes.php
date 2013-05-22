@@ -38,7 +38,7 @@
 |
 */
 
-$route['authenticated'] = 'webapp/authenticated';
+$route['authenticate'] = 'webapp/authenticate';
 $route['participate'] = 'webapp/authorize';
 $route['default_controller'] = 'webapp/view';
 

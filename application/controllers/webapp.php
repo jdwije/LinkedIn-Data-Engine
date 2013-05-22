@@ -37,10 +37,14 @@ class Webapp extends CI_Controller {
 	}
 
 	/* redirect function after user has authrnticated */
-	public function authenticated() {
+	public function authenticate() {
 		$this->load->view('templates/header', $data);
 		$this->load->view('pages/thankyou');
 		$this->load->view('templates/footer', $data);
+	}
+
+	public function access_granted() {
+		
 	}
 
 }
