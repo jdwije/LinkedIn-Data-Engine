@@ -3,7 +3,7 @@
 /* This is the controller for linked in application logic */
 class Linkedin extends CI_Model {
 
-	private $db_opts;
+	public $db_opts;
 
 	public function __construct()
 	{
@@ -13,7 +13,7 @@ class Linkedin extends CI_Model {
 		include_once realpath("resources/libs/oauth-php/library/OAuthRequester.php");
 		
 		# set db opts
-		$this->db_opts = $options = array(
+		$this->db_opts = array(
 				'server' => 'localhost', 
 				'username' => 'root',
                 'password' => 'Arz1|9KaF6[yg!6',  
