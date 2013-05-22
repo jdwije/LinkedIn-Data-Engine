@@ -12,10 +12,10 @@ class Linkedin extends CI_Model {
 	}
 
 	public function authorize_new_user() {
-		$this->do_oauth('9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 'r_network');
+		$this->do_oauth('9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
 	}
 
-	private function do_oauth($key, $secret, $scope) {		
+	private function do_oauth($key, $secret) {		
 		# set some vars
 		$options = array('consumer_key' => $key, 'consumer_secret' => $secret);
 		$state = 'DCEEFWF45453sdffef424';
