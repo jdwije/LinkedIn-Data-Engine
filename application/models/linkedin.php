@@ -22,7 +22,7 @@ class Linkedin extends CI_Model {
 	}
 
 	public function authorize_new_user() {
-		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
+		# $this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
 		# $this->test_oauth();
 	}
 
