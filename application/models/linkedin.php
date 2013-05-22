@@ -17,8 +17,8 @@ class Linkedin extends CI_Model {
 
 	private function do_oauth($key, $secret) {		
 		# build oauth store
-		$options = array('server' => 'localhost', 'username' => 'philiapp',
-                 'password' => 'RSpjwdV5ZtTMee4m',  'database' => 'lde');
+		$options = array('server' => 'localhost', 'username' => 'root',
+                 'password' => 'Arz1|9KaF6[yg!6',  'database' => 'lde');
 		$store   = OAuthStore::instance('MySQL', $options);
 
 		# add store to connect
