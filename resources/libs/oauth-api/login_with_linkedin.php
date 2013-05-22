@@ -6,7 +6,6 @@
  *
  */
 
-	require('http.php');
 	require('oauth_client.php');
 
 	$client = new oauth_client_class;
