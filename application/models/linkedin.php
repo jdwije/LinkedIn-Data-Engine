@@ -54,7 +54,7 @@ class Linkedin extends CI_Model {
 		    'server_uri' => 'https://www.linkedin.com/',
 		    'signature_methods' => array('HMAC-SHA1', 'PLAINTEXT'),
 		    'request_token_uri' => 'https://api.linkedin.com/uas/oauth/requestToken',
-		    'authorize_uri' =>  base_url() . "index.php/authenticate",
+		    'authorize_uri' =>  'https://api.linkedin.com/uas/oauth/authorize',
 		    'access_token_uri' => 'https://api.linkedin.com/uas/oauth/accessToken'
 		);
 
@@ -110,7 +110,7 @@ class Linkedin extends CI_Model {
 
 			echo $oauth_token_secret;
 			echo "<br />";
-			
+
 			echo $consumer_key;
 			
 		   # $mad_token = OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
