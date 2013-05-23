@@ -105,15 +105,15 @@ class Linkedin extends CI_Model {
 		try
 		{	
 
-			echo $oauth_token;
-			echo "<br />";
+		#	echo $oauth_token;
+		#	echo "<br />";
 
-			echo $oauth_token_secret;
-			echo "<br />";
+		#	echo $oauth_token_secret;
+		#	echo "<br />";
 
-			echo $consumer_key;
+		#	echo $consumer_key;
 			
-		   # $mad_token = OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
+		   $mad_token = OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
 		}
 		catch (OAuthException $e)
 		{
