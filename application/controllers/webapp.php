@@ -43,6 +43,8 @@ class Webapp extends CI_Controller {
 		$this->linkedin->verify_auth();
 	}
 
+	# this fn is the call back for the oauth process. users are directed
+	# here along with there access token in as a GET param ['code']
 	public function access_granted() {
 		
 	}
