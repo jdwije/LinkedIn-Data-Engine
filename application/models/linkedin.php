@@ -99,7 +99,7 @@ class Linkedin extends CI_Model {
 	public function verify_auth () {
 		# get post vars
 		$oauth_token = $_GET['oauth_token'];
-		$oauth_token_secret = $_GET['oauth_token_secret'];
+		# $oauth_token_secret = $_GET['oauth_token_secret'];
 		$consumer_key =$this->get_consumer_key(1);
 
 		try
