@@ -62,7 +62,7 @@ class Linkedin extends CI_Model {
 		    'server_uri' => 'https://www.linkedin.com/',
 		    'signature_methods' => array('HMAC-SHA1', 'PLAINTEXT'),
 		    'request_token_uri' => 'https://api.linkedin.com/uas/oauth/requestToken',
-		    'authorize_uri' =>  base_url() . "index.php/authenticate",
+		    'authorize_uri' =>  'https://api.linkedin.com/uas/oauth/authorize',
 		    'access_token_uri' => 'https://api.linkedin.com/uas/oauth/accessToken'
 		);
 
@@ -113,15 +113,21 @@ class Linkedin extends CI_Model {
 	public function verify_auth () {
 		# get post vars
 		$oauth_token = $_GET['oauth_token'];
+		# $oauth_token_secret = $_GET['oauth_token_secret'];
 		$consumer_key =$this->get_consumer_key(1);
 
 		try
 		{	
-			echo $oauth_token;
-			echo "<br />";
-			echo $consumer_key;
+
+		#	echo $oauth_token;
+		#	echo "<br />";
+
+		#	echo $oauth_token_secret;
+		#	echo "<br />";
+
+		#	echo $consumer_key;
 			
-		   # $mad_token = OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
+		   $mad_token = OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
 		}
 		catch (OAuthException $e)
 		{
