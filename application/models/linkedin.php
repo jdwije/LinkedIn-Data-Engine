@@ -27,21 +27,21 @@ class Linkedin extends CI_Model {
 	# @param $secret (String) :: Your consumer secret as a string
 	public function do_authentication() {
 		# create a new client
-		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
+		$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
 
 		# filter for 'code' param in $_GET
 		if (!isset($_GET['code']))
 		{	
 			# not set, redirect to the authorisation dialogue
-		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI, array('state' => APP_STATE));
+		    $auth_url = $client->getAuthenticationUrl(self::AUTHORIZATION_ENDPOINT, self::REDIRECT_URI, array('state' => self::APP_STATE));
 		    header('Location: ' . $auth_url);
 		    die('Redirect');
 		}
 		else
 		{	
 			# set, lets save our user
-		    $params = array('code' => $_GET['code'], 'redirect_uri' => REDIRECT_URI);
-		    $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
+		    $params = array('code' => $_GET['code'], 'redirect_uri' => self::REDIRECT_URI);
+		    $response = $client->getAccessToken(self::TOKEN_ENDPOINT, 'authorization_code', $params);
 		    $result = $response['result'];
 		    $code = $response['code'];
 		    $content_type = $response['content_type'];
