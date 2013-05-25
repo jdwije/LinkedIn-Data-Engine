@@ -53,12 +53,12 @@ class Linkedin extends CI_Model {
 		    $result = $response['result'];
 		    $code = $response['code'];
 		    $content_type = $response['content_type'];
-		    $client->setAccessToken($result['access_token']);
 		    # we have our token, save it along with some user data
 		    $access_token = $result['access_token'];
 		    $expires_in = $result['expires_in'];
-
-		   	$data = $client->fetch('http://api.linkedin.com/v1/people/~');
+		    # set access token
+   		    $client->setAccessToken($access_token);
+		   	$data = $client->fetch('http://api.linkedin.com/v1/people/~/connections');
 		   	var_dump($data);
 		}
 	}
