@@ -63,10 +63,6 @@ class Linkedin extends CI_Model {
 		   	echo $access_token . "<br />";
 		   	echo $code . "<br />";
 		   	var_dump($data);
-		   	echo "<br />";
-		   	var_dump($response);
-		   	echo "<br />";
-		   	var_dump($result);
 		}
 	}
 
