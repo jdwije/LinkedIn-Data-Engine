@@ -1,15 +1,15 @@
 <?php 
-const CLIENT_ID     = '9tm0ff16gpuy';
-const CLIENT_SECRET = 'mYffXDX3RS3t8uEF';
-const REDIRECT_URI           = 'http://54.251.251.190/index.php/participate';
-const AUTHORIZATION_ENDPOINT = 'https://www.linkedin.com/uas/oauth2/authorization';
-const TOKEN_ENDPOINT         = 'https://www.linkedin.com/uas/oauth2/accessToken';
-const APP_STATE = '413E7FA26978F9F447BCF1173B9D6';
+
 
 /* This is the controller for linked in application logic */
 class Linkedin extends CI_Model {
-
-	public $db_opts; # stores the database connection config
+	# define constants
+	const CLIENT_ID     = '9tm0ff16gpuy';
+	const CLIENT_SECRET = 'mYffXDX3RS3t8uEF';
+	const REDIRECT_URI           = 'http://54.251.251.190/index.php/participate';
+	const AUTHORIZATION_ENDPOINT = 'https://www.linkedin.com/uas/oauth2/authorization';
+	const TOKEN_ENDPOINT         = 'https://www.linkedin.com/uas/oauth2/accessToken';
+	const APP_STATE = '413E7FA26978F9F447BCF1173B9D6';
 
 	# builds our object
 	function __construct()
@@ -20,14 +20,6 @@ class Linkedin extends CI_Model {
 		require('resources/libs/php-oauth2/Client.php');
 		require('resources/libs/php-oauth2/GrantType/IGrantType.php');
 		require('resources/libs/php-oauth2/GrantType/AuthorizationCode.php');
-		
-		# set db opts
-		$this->db_opts = array(
-				'server' => 'localhost', 
-				'username' => 'root',
-                'password' => 'Arz1|9KaF6[yg!6',  
-                'database' => 'lde'
-            );
 	}
 
 	# do an oauth. !
@@ -79,7 +71,7 @@ class Linkedin extends CI_Model {
 
 	   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
 	   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
-	   	
+
    	   header('Location: ' . site_url('access_granted'));
 	   die('Redirect');
 	}
