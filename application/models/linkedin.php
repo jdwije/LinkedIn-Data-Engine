@@ -30,37 +30,24 @@ class Linkedin extends CI_Model {
             );
 	}
 
-	# returns available oauth server from store
-	public function get_oauth_servers() {
-		$opts = $this->db_opts;
-		$store = OAuthStore::instance('MySQL', $opts);
-		$servers = $store->listServers('', 1);
-		return $servers;
-	}
-
-	# gets the consumer key from server with id $id
-	# @param $id (INT) :: The id of the store as an integer
-	public function get_consumer_key ($id) {
-		$servers = $this->get_oauth_servers();
-		$c_key = $servers[ $id - 1 ]['consumer_key'];
-		return $c_key;
-	}
-
 	# do an oauth. !
 	# @param $key (String) :: Your consumer key as a string
 	# @param $secret (String) :: Your consumer secret as a string
 	public function do_authentication() {
-	
+		# create a new client
 		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
 
+		# filter for 'code' param in $_GET
 		if (!isset($_GET['code']))
-		{
+		{	
+			# not set, redirect to the authorisation dialogue
 		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI, array('state' => APP_STATE));
 		    header('Location: ' . $auth_url);
 		    die('Redirect');
 		}
 		else
-		{
+		{	
+			# set, lets save our user
 		    $params = array('code' => $_GET['code'], 'redirect_uri' => REDIRECT_URI);
 		    $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
 		    $result = $response['result'];
@@ -70,38 +57,10 @@ class Linkedin extends CI_Model {
 		    # we have our token, save it along with some user data
 		    $access_token = $result['access_token'];
 		    $expires_in = $result['expires_in'];
-		    echo $access_token;
-		    echo "<br />";
-		    echo $expires_in;
 
+		   	$data = $client->apc_fetch('http://api.linkedin.com/v1/people/~');
+		   	var_dump($data);
 		}
-	}
-
-	# verify authentication. called via a url
-	# @GET['oauth_token'] (String) :: The oauth token provided by the server as a GET param
-	public function verify_auth () {
-		# get post vars
-		$oauth_token = $_GET['oauth_token'];
-		# $oauth_token_secret = $_GET['oauth_token_secret'];
-		$consumer_key =$this->get_consumer_key(1);
-
-		try
-		{	
-
-		#	echo $oauth_token;
-		#	echo "<br />";
-
-		#	echo $oauth_token_secret;
-		#	echo "<br />";
-
-		#	echo $consumer_key;
-			
-		   $mad_token = OAuthRequester::requestAccessToken($consumer_key, $oauth_token, 1);
-		}
-		catch (OAuthException $e)
-		{
-		    var_dump($e);
-		}	
 	}
 
 }
