@@ -51,45 +51,22 @@ class Linkedin extends CI_Model {
 		return $c_key;
 	}
 
-	# fn is used to build/install the oauth store if it is not yet ready for use
+	# do an oauth. !
 	# @param $key (String) :: Your consumer key as a string
 	# @param $secret (String) :: Your consumer secret as a string
-	public function build_oauth_store ($key, $secret) {
-		# build oauth store
-		$opts = $this->db_opts;
-		$store = OAuthStore::instance('MySQL', $opts);
-
-		# store user ID
-		$uid = 1;
-
-		# The server description
-		$server = array(
-		    'consumer_key' => $key,
-		    'consumer_secret' => $secret,
-		    'server_uri' => 'https://www.linkedin.com/',
-		    'signature_methods' => array('HMAC-SHA1', 'PLAINTEXT'),
-		    'request_token_uri' => 'https://api.linkedin.com/uas/oauth/requestToken',
-		    'authorize_uri' =>  'https://api.linkedin.com/uas/oauth/authorize',
-		    'access_token_uri' => 'https://api.linkedin.com/uas/oauth/accessToken'
-		);
-
-		# Save the server in the the OAuthStore
-		$consumer_key = $store->updateServer($server, $uid);
-	}
-
-	# do an oauth. you must have an oauth store setup to use this function!
-	# @param $key (String) :: Your consumer key as a string
-	# @param $secret (String) :: Your consumer secret as a string
-	# @param $uid (INT) :: The id of the oauth sever to use from our oauth store
-	public function begin_auth($key, $secret) {
+	public function begin_auth( $key, $secret ) {
 	
 		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
 
 		if (!isset($_GET['code']))
 		{
 		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI);
-		    header('Location: ' . $auth_url);
-		    die('Redirect');
+		    # header('Location: ' . $auth_url);
+		    
+		    var_dump($client);
+		    var_dump($auth_url);
+
+		    die('Redirect')	;
 		}
 		else
 		{
