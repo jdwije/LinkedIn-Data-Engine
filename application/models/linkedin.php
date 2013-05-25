@@ -59,7 +59,7 @@ class Linkedin extends CI_Model {
 		    # set access token
    		    $client->setAccessToken($access_token);
    		    $client->setAccessTokenParamName('oauth2_access_token');
-		   	$data = $client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email,industry)');
+		   	$data = $client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location,num-connections)');
 		   	echo $access_token . "<br />";
 		   	echo $code . "<br />";
 		   	var_dump($data);
