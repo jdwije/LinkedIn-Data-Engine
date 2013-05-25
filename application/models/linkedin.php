@@ -11,8 +11,10 @@ class Linkedin extends CI_Model {
 		# load db class
 		$this->load->database();
 		# include libs
-		include_once realpath("resources/libs/oauth-php/library/OAuthStore.php");
-		include_once realpath("resources/libs/oauth-php/library/OAuthRequester.php");
+		require('resources/libs/php-oauth2/lclient.php');
+		require('resources/libs/php-oauth2/lGrantType/IGrantType.php');
+		require('resources/libs/php-oauth2/lGrantType/AuthorizationCode.php');
+		
 		# set db opts
 		$this->db_opts = array(
 				'server' => 'localhost', 
@@ -24,7 +26,7 @@ class Linkedin extends CI_Model {
 
 	# this function kicks off the oauth process
 	public function authorize_new_user() {
-		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
+		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
 		# $this->test_oauth();
 	}
 
@@ -74,39 +76,30 @@ class Linkedin extends CI_Model {
 	# @param $key (String) :: Your consumer key as a string
 	# @param $secret (String) :: Your consumer secret as a string
 	# @param $uid (INT) :: The id of the oauth sever to use from our oauth store
-	public function begin_auth($key, $secret, $uid) {
-		# get c key
-		$consumer_key = $this->get_consumer_key($uid);
+	public function begin_auth($key, $secret) {
+		const CLIENT_ID     = $key;
+		const CLIENT_SECRET = $secret;
+		const REDIRECT_URI           = base_url() . 'participate';
+		const AUTHORIZATION_ENDPOINT = 'https://api.linkedin.com/uas/oauth/authorize';
+		const TOKEN_ENDPOINT         = 'https://api.linkedin.com/uas/oauth/accessToken';
 
-		// Obtain a request token from the server
-		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
+		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
 
-		// Callback to our (consumer) site, will be called when the user finished the authorization at the server
-		$callback_uri = base_url() . 'access_granted?consumer_key='.rawurlencode($consumer_key).'&usr_id='.intval($uid);
-
-		// Now redirect to the autorization uri and get us authorized
-		if (!empty($token['authorize_uri']))
+		if (!isset($_GET['code']))
 		{
-		    // Redirect to the server, add a callback to our server
-		    if (strpos($token['authorize_uri'], '?'))
-		    {
-		        $uri = $token['authorize_uri'] . '&'; 
-		    }
-		    else
-		    {
-		        $uri = $token['authorize_uri'] . '?'; 
-		    }
-		    $uri .= 'oauth_token='.rawurlencode($token['token']).'&oauth_callback='.rawurlencode($callback_uri);
+		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI);
+		    header('Location: ' . $auth_url);
+		    die('Redirect');
 		}
 		else
 		{
-		    // No authorization uri, assume we are authorized, exchange request token for access token
-		   $uri = $callback_uri . '&oauth_token='.rawurlencode($token['token']);
+		    $params = array('code' => $_GET['code'], 'redirect_uri' => REDIRECT_URI);
+		    $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
+		    parse_str($response['result'], $info);
+		    $client->setAccessToken($info['access_token']);
+		    $response = $client->fetch('https://graph.facebook.com/me');
+		    var_dump($response, $response['result']);
 		}
-		# var_dump($token);
-		# var_dump($uri);
-		header('Location: '. $uri);
-		exit();
 	}
 
 	# verify authentication. called via a url
