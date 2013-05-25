@@ -58,12 +58,32 @@ class Linkedin extends CI_Model {
 		    $expires_in = $result['expires_in'];
 		    # set access token
    		    $client->setAccessToken($access_token);
-   		    $client->setAccessTokenParamName('oauth2_access_token');
-		   	$data = $client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location,num-connections)');
-		   	$xml = simplexml_load_string($data['result']);
-		   	echo $xml->{'first-name'};
-		   	print_r($xml);
+   		   $this->register_new_participant($client, $access_token, $expires_in );
 		}
+	}
+
+	private function register_new_participant ($oauth_client, $token, $token_expiry) {
+		$oauth_client->setAccessTokenParamName('oauth2_access_token');
+	   	$data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location,num-connections)');
+	   	$xml = simplexml_load_string($data['result']);
+	   	$linkedin_id = $xml->id;
+	   	$fname = $xml->{'first-name'};
+	   	$lname = $xml->{'last-name'};
+	   	$email =  $xml->{'email-address'};
+	   	$industry = $xml->industry;
+	   	$num_connections = $xml->{'num-connections'};
+	   	$location_name = $xml->location->name;
+	   	$location_country = $xml->location->country;
+	   	$location_country_code = $xml->location->code;
+	   	$current_time = date('y-m-d');
+
+	   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
+	   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
+	}
+
+	# checks if particip[ant is already registerd
+	private function participant_exists($linkedin_id) {
+		
 	}
 
 }
