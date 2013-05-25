@@ -61,10 +61,10 @@ class Linkedin extends CI_Model {
 		if (!isset($_GET['code']))
 		{
 		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI);
-		    # header('Location: ' . $auth_url);
+		    header('Location: ' . $auth_url);
 
-		    var_dump($client);
-		    var_dump($auth_url);
+		    # var_dump($client);
+		    # var_dump($auth_url);
 
 		    die('Redirect')	;
 		}
