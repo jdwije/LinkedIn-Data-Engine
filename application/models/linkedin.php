@@ -2,8 +2,8 @@
 const CLIENT_ID     = '9tm0ff16gpuy';
 const CLIENT_SECRET = 'mYffXDX3RS3t8uEF';
 const REDIRECT_URI           = 'http://54.251.251.190/participate';
-const AUTHORIZATION_ENDPOINT = 'https://api.linkedin.com/uas/oauth/authorize';
-const TOKEN_ENDPOINT         = 'https://api.linkedin.com/uas/oauth/accessToken';
+const AUTHORIZATION_ENDPOINT = 'https://www.linkedin.com/uas/oauth2/authorization';
+const TOKEN_ENDPOINT         = 'https://www.linkedin.com/uas/oauth2/accessToken';
 
 /* This is the controller for linked in application logic */
 class Linkedin extends CI_Model {
@@ -62,7 +62,7 @@ class Linkedin extends CI_Model {
 		{
 		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI);
 		    # header('Location: ' . $auth_url);
-		    
+
 		    var_dump($client);
 		    var_dump($auth_url);
 
