@@ -49,7 +49,7 @@ class Linkedin extends CI_Model {
 	# do an oauth. !
 	# @param $key (String) :: Your consumer key as a string
 	# @param $secret (String) :: Your consumer secret as a string
-	public function do_authentication( $key, $secret ) {
+	public function do_authentication() {
 	
 		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
 
