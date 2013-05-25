@@ -1,17 +1,18 @@
 <?php 
-
+	
 /* This is the controller for linked in application logic */
 class Linkedin extends CI_Model {
 
-	public $db_opts;
+	public $db_opts; # stores the database connection config
 
+	# builds our object
 	function __construct()
-	{
+	{	
+		# load db class
 		$this->load->database();
 		# include libs
 		include_once realpath("resources/libs/oauth-php/library/OAuthStore.php");
 		include_once realpath("resources/libs/oauth-php/library/OAuthRequester.php");
-		
 		# set db opts
 		$this->db_opts = array(
 				'server' => 'localhost', 
@@ -21,11 +22,13 @@ class Linkedin extends CI_Model {
             );
 	}
 
+	# this function kicks off the oauth process
 	public function authorize_new_user() {
 		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF', 1 );
 		# $this->test_oauth();
 	}
 
+	# returns available oauth server from store
 	public function get_oauth_servers() {
 		$opts = $this->db_opts;
 		$store = OAuthStore::instance('MySQL', $opts);
@@ -33,12 +36,17 @@ class Linkedin extends CI_Model {
 		return $servers;
 	}
 
+	# gets the consumer key from server with id $id
+	# @param $id (INT) :: The id of the store as an integer
 	public function get_consumer_key ($id) {
 		$servers = $this->get_oauth_servers();
 		$c_key = $servers[ $id - 1 ]['consumer_key'];
 		return $c_key;
 	}
 
+	# fn is used to build/install the oauth store if it is not yet ready for use
+	# @param $key (String) :: Your consumer key as a string
+	# @param $secret (String) :: Your consumer secret as a string
 	public function build_oauth_store ($key, $secret) {
 		# build oauth store
 		$opts = $this->db_opts;
@@ -62,6 +70,10 @@ class Linkedin extends CI_Model {
 		$consumer_key = $store->updateServer($server, $uid);
 	}
 
+	# do an oauth. you must have an oauth store setup to use this function!
+	# @param $key (String) :: Your consumer key as a string
+	# @param $secret (String) :: Your consumer secret as a string
+	# @param $uid (INT) :: The id of the oauth sever to use from our oauth store
 	public function begin_auth($key, $secret, $uid) {
 		# get c key
 		$consumer_key = $this->get_consumer_key($uid);
@@ -96,6 +108,8 @@ class Linkedin extends CI_Model {
 		exit();
 	}
 
+	# verify authentication. called via a url
+	# @GET['oauth_token'] (String) :: The oauth token provided by the server as a GET param
 	public function verify_auth () {
 		# get post vars
 		$oauth_token = $_GET['oauth_token'];
