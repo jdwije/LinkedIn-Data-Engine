@@ -81,6 +81,7 @@ class Linkedin extends CI_Model {
 		// Obtain a request token from the server
 		$token = OAuthRequester::requestRequestToken($consumer_key, $uid);
 
+
 		// Callback to our (consumer) site, will be called when the user finished the authorization at the server
 		$callback_uri = base_url() . 'access_granted?consumer_key='.rawurlencode($consumer_key).'&usr_id='.intval($uid);
 
@@ -103,8 +104,9 @@ class Linkedin extends CI_Model {
 		    // No authorization uri, assume we are authorized, exchange request token for access token
 		   $uri = $callback_uri . '&oauth_token='.rawurlencode($token['token']);
 		}
-
-		header('Location: '. $uri);
+		var_dump($token);
+		var_dump($uri);
+		# header('Location: '. $uri);
 		exit();
 	}
 
