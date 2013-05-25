@@ -68,7 +68,7 @@ class Linkedin extends CI_Model {
 		    # we have our token, save it along with some user data
 		    $access_token = $info['access_token'];
 		    $expires_in = $info['expires_in'];
-		    echo $access_token;
+		    var_dump($response);
 		    echo "<br />";
 		    echo $expires_in;
 
