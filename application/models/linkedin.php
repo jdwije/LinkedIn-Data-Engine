@@ -1,5 +1,10 @@
 <?php 
-	
+const CLIENT_ID     = '9tm0ff16gpuy';
+const CLIENT_SECRET = 'mYffXDX3RS3t8uEF';
+const REDIRECT_URI           = 'http://54.251.251.190/participate';
+const AUTHORIZATION_ENDPOINT = 'https://api.linkedin.com/uas/oauth/authorize';
+const TOKEN_ENDPOINT         = 'https://api.linkedin.com/uas/oauth/accessToken';
+
 /* This is the controller for linked in application logic */
 class Linkedin extends CI_Model {
 
@@ -77,12 +82,7 @@ class Linkedin extends CI_Model {
 	# @param $secret (String) :: Your consumer secret as a string
 	# @param $uid (INT) :: The id of the oauth sever to use from our oauth store
 	public function begin_auth($key, $secret) {
-		const CLIENT_ID     = $key;
-		const CLIENT_SECRET = $secret;
-		const REDIRECT_URI           = base_url() . 'participate';
-		const AUTHORIZATION_ENDPOINT = 'https://api.linkedin.com/uas/oauth/authorize';
-		const TOKEN_ENDPOINT         = 'https://api.linkedin.com/uas/oauth/accessToken';
-
+	
 		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
 
 		if (!isset($_GET['code']))
