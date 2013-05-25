@@ -57,7 +57,7 @@ class Linkedin extends CI_Model {
 		{
 		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI, array('state' => APP_STATE));
 		    header('Location: ' . $auth_url);
-		    die('Redirect')	;
+		    die('Redirect');
 		}
 		else
 		{
@@ -65,7 +65,13 @@ class Linkedin extends CI_Model {
 		    $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
 		    parse_str($response['result'], $info);
 		    $client->setAccessToken($info['access_token']);
-		    var_dump($response, $response['result']);
+		    # we have our token, save it along with some user data
+		    $access_token = $info['access_token'];
+		    $expires_in = $info['expires_in'];
+		    echo $access_token;
+		    echo "<br />";
+		    echo $expires_in;
+
 		}
 	}
 
