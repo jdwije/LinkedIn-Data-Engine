@@ -58,7 +58,9 @@ class Linkedin extends CI_Model {
 		    $expires_in = $result['expires_in'];
 		    # set access token
    		    $client->setAccessToken($access_token);
-		   	$data = $client->fetch('http://api.linkedin.com/v1/people/~/connections');
+		   	$data = $client->fetch('http://api.linkedin.com/v1/people/~');
+		   	echo $access_token . "<br />";
+		   	echo $code . "<br />";
 		   	var_dump($data);
 		}
 	}
