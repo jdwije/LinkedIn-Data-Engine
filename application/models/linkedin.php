@@ -73,8 +73,8 @@ class Linkedin extends CI_Model {
 	   	$industry = $xml->industry;
 	   	$num_connections = $xml->{'num-connections'};
 	   	$location_name = $xml->location->name;
-	   	$location_country = $xml->location->country;
-	   	$location_country_code = $xml->location->code;
+	   	$location_country = $xml->location->country->name;
+	   	$location_country_code = $xml->location->country->code;
 	   	$current_time = date('y-m-d');
 
 	   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
@@ -83,7 +83,7 @@ class Linkedin extends CI_Model {
 
 	# checks if particip[ant is already registerd
 	private function participant_exists($linkedin_id) {
-		
+
 	}
 
 }
