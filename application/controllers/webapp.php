@@ -33,7 +33,7 @@ class Webapp extends CI_Controller {
 	/* this method kicks off the authorization process so we can fetch the users data */
 	public function authorize() {
 		# authenticate the new user
-		$this->linkedin->authorize_new_user();	
+		$this->linkedin->do_authentication();	
 	}
 
 	/* redirect function after user has authrnticated */

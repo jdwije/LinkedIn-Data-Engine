@@ -30,12 +30,6 @@ class Linkedin extends CI_Model {
             );
 	}
 
-	# this function kicks off the oauth process
-	public function authorize_new_user() {
-		$this->begin_auth( '9tm0ff16gpuy', 'mYffXDX3RS3t8uEF' );
-		# $this->test_oauth();
-	}
-
 	# returns available oauth server from store
 	public function get_oauth_servers() {
 		$opts = $this->db_opts;
@@ -55,7 +49,7 @@ class Linkedin extends CI_Model {
 	# do an oauth. !
 	# @param $key (String) :: Your consumer key as a string
 	# @param $secret (String) :: Your consumer secret as a string
-	public function begin_auth( $key, $secret ) {
+	public function do_authentication( $key, $secret ) {
 	
 		$client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
 
@@ -63,10 +57,6 @@ class Linkedin extends CI_Model {
 		{
 		    $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI, array('state' => APP_STATE));
 		    header('Location: ' . $auth_url);
-
-		    # var_dump($client);
-		    # var_dump($auth_url);
-
 		    die('Redirect')	;
 		}
 		else
@@ -75,7 +65,6 @@ class Linkedin extends CI_Model {
 		    $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
 		    parse_str($response['result'], $info);
 		    $client->setAccessToken($info['access_token']);
-		    $response = $client->fetch('https://graph.facebook.com/me');
 		    var_dump($response, $response['result']);
 		}
 	}
