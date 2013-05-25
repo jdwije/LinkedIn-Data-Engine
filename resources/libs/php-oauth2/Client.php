@@ -428,7 +428,7 @@ class Client
                 break;
         }
 
-        $curl_options[CURLOPT_URL] = str_replace('%7E', '~', rawurlencode($url));
+        $curl_options[CURLOPT_URL] = str_replace('%7E', '~', $url);
 
         if (is_array($http_headers)) {
             $header = array();
