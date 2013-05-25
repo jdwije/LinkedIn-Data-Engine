@@ -16,9 +16,9 @@ class Linkedin extends CI_Model {
 		# load db class
 		$this->load->database();
 		# include libs
-		require('resources/libs/php-oauth2/lclient.php');
-		require('resources/libs/php-oauth2/lGrantType/IGrantType.php');
-		require('resources/libs/php-oauth2/lGrantType/AuthorizationCode.php');
+		require('resources/libs/php-oauth2/Client.php');
+		require('resources/libs/php-oauth2/GrantType/IGrantType.php');
+		require('resources/libs/php-oauth2/GrantType/AuthorizationCode.php');
 		
 		# set db opts
 		$this->db_opts = array(
