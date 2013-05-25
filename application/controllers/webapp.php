@@ -46,7 +46,10 @@ class Webapp extends CI_Controller {
 	# this fn is the call back for the oauth process. users are directed
 	# here along with there access token in as a GET param ['code']
 	public function access_granted() {
-		
+		$data['page_title'] = "Thank You";
+		$this->load->view('templates/header', $data);
+		$this->load->view('pages/thankyou', $data);
+		$this->load->view('templates/footer', $data);
 	}
 
 }

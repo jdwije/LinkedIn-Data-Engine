@@ -79,6 +79,9 @@ class Linkedin extends CI_Model {
 
 	   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
 	   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
+	   	
+   	   header('Location: ' . site_url('access_granted'));
+	   die('Redirect');
 	}
 
 	# checks if particip[ant is already registerd
