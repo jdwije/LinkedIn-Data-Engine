@@ -63,12 +63,14 @@ class Linkedin extends CI_Model {
 		{
 		    $params = array('code' => $_GET['code'], 'redirect_uri' => REDIRECT_URI);
 		    $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
-		    parse_str($response['result'], $info);
-		    $client->setAccessToken($info['access_token']);
+		    $result = $response['result'];
+		    $code = $response['code'];
+		    $content_type = $response['content_type'];
+		    $client->setAccessToken($result['access_token']);
 		    # we have our token, save it along with some user data
-		    $access_token = $info['access_token'];
-		    $expires_in = $info['expires_in'];
-		    var_dump($response);
+		    $access_token = $result['access_token'];
+		    $expires_in = $result['expires_in'];
+		    echo $access_token;
 		    echo "<br />";
 		    echo $expires_in;
 
