@@ -76,7 +76,7 @@ class Linkedin extends CI_Model {
 		}
 		else {
 			# user exists so do update
-			$this->db->query("UPDATE participants SET token = '$token' and token_expiry = '$token_expiry' WHERE linkedin_id = '$linkedin_id' ");
+			$this->db->query("UPDATE participants SET token = '$token' and token_expiry = '$token_expiry' and last_updated = '$current_time' WHERE linkedin_id = '$linkedin_id' ");
 		}
 		# do redirect
    	   	header('Location: ' . site_url('access_granted'));
@@ -89,7 +89,8 @@ class Linkedin extends CI_Model {
 	private function participant_exists($linkedin_id) {
 		$result = $this->db->query("SELECT COUNT(*) FROM participants WHERE linkedin_id = '$linkedin_id'");
 		$row_count = mysql_num_rows($result);
-		return $row_count < 1 ? false : true;
+		$r = $row_count < 1 ? false : true;
+		return $r;
 	}
 
 }
