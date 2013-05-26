@@ -69,16 +69,27 @@ class Linkedin extends CI_Model {
 	   	$location_country_code = $xml->location->country->code;
 	   	$current_time = date('y-m-d');
 
-	   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
-	   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
-
-   	   header('Location: ' . site_url('access_granted'));
-	   die('Redirect');
+	   	if (!$this->participant_exists($linkedin_id)) {
+	   		# user does not yet exists
+		   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
+		   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
+		}
+		else {
+			# user exists so do update
+			$this->db->query("UPDATE participants SET token = '$token' and token_expiry = '$token_expiry' WHERE linkedin_id = '$linkedin_id' ");
+		}
+		# do redirect
+   	   	header('Location: ' . site_url('access_granted'));
+	   	die('Redirect');
 	}
 
 	# checks if particip[ant is already registerd
+	# @param $linkedin_id (String) :: A linked in profile id
+	# @returns $result (Boolean) :: true or false if participants exists or not
 	private function participant_exists($linkedin_id) {
-
+		$result = $this->db->query("SELECT COUNT(*) FROM participants WHERE linkedin_id = '$linkedin_id'");
+		$row_count = mysql_num_rows($result);
+		return $row_count < 1 ? false : true;
 	}
 
 }
