@@ -68,8 +68,9 @@ class Linkedin extends CI_Model {
 	   	$location_country = $xml->location->country->name;
 	   	$location_country_code = $xml->location->country->code;
 	   	$current_time = date('y-m-d');
-
-	   	if (!$this->participant_exists($linkedin_id)) {
+	   	$p_exists = $this->participant_exists($linkedin_id);
+	   	echo $p_exists;
+	   	if (!$p_exists) {
 	   		# user does not yet exists
 		   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
 		   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
@@ -79,7 +80,7 @@ class Linkedin extends CI_Model {
 			$this->db->query("UPDATE participants SET token = '$token' and token_expiry = '$token_expiry' and last_updated = '$current_time' WHERE linkedin_id = '$linkedin_id' ");
 		}
 		# do redirect
-   	   	header('Location: ' . site_url('access_granted'));
+   	   	# header('Location: ' . site_url('access_granted'));
 	   	die('Redirect');
 	}
 
