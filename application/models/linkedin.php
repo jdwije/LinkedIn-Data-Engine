@@ -54,10 +54,15 @@ class Linkedin extends CI_Model {
 		}
 	}
 
+
 	private function register_new_participant ($oauth_client, $token, $token_expiry) {
+		# set client token
 		$oauth_client->setAccessTokenParamName('oauth2_access_token');
+		# do fetch
 	   	$data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location,num-connections)');
+	   	# load xml
 	   	$xml = simplexml_load_string($data['result']);
+	   	# cache required values
 	   	$linkedin_id = $xml->id;
 	   	$fname = $xml->{'first-name'};
 	   	$lname = $xml->{'last-name'};
@@ -67,20 +72,18 @@ class Linkedin extends CI_Model {
 	   	$location_name = $xml->location->name;
 	   	$location_country = $xml->location->country->name;
 	   	$location_country_code = $xml->location->country->code;
+	   	# set current date time
 	   	$current_time = date('y-m-d');
+	   	# check if participant exists before adding
 	   	$p_exists = $this->participant_exists($linkedin_id);
-	   	echo $p_exists;
+	   	# only update if the user doesnt already exist
 	   	if (!$p_exists) {
 	   		# user does not yet exists
 		   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
 		   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
 		}
-		else {
-			# user exists so do update
-			$this->db->query("UPDATE participants SET token = '$token' and token_expiry = '$token_expiry' and last_updated = '$current_time' WHERE linkedin_id = '$linkedin_id' ");
-		}
 		# do redirect
-   	   	# header('Location: ' . site_url('access_granted'));
+   	   	header('Location: ' . site_url('access_granted'));
 	   	die('Redirect');
 	}
 
