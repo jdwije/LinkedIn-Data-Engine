@@ -89,9 +89,7 @@ class Linkedin extends CI_Model {
 	# @returns $result (Boolean) :: true or false if participants exists or not
 	private function participant_exists($linkedin_id) {
 		$result = $this->db->query("SELECT linkedin_id FROM participants WHERE linkedin_id = '$linkedin_id'");
-		$row_count = mysql_num_rows($result);
-		$r = $row_count < 1 ? false : true;
-		return $r;
+		return $result->num_rows() < 1 ? false : true;
 	}
 
 }
