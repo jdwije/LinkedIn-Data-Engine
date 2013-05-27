@@ -29,7 +29,7 @@ class Linkedin extends CI_Model {
 		# figure out what settings we are using
 		$settings_query = $this->db->query("SELECT * FROM lde_active_brain LIMIT 1");
 		$settings_row = $settings_query->row(1);
-		$this->active_settings = $settings_row['active_configuration'];
+		$this->active_settings = $settings_row->active_configuration;
 		$active_id = $this->active_settings;
 
 		# load the settings conguration from the database and store in object
@@ -147,7 +147,7 @@ class Linkedin extends CI_Model {
 		$active_settings = $this->active_settings;
 		$limit = $this->api_daily_limit;
 		$fetch_count = $this->fetch_count;
-		
+
 		# get the latest, fetched today count
 		$current_fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1);
 		$fetched_today = $current_fetched_today['fetched_today'];
