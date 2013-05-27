@@ -187,15 +187,16 @@ class Linkedin extends CI_Model {
 		$result = $this->db->query("SELECT user_id FROM lde_schedule ORDER BY added_on ASC LIMIT 1");
 	    $row = $result->row_array(1); 
 		$next_uid = $row->user_id;
-		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$next_uid'")->row(0);
+		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$next_uid'")->row(1);
 		$token = $user->token;
-
+		echo $next_uid ."<br >";
+		echo $token;
 		# create client
 		$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
 		# set access token
 		$client->setAccessToken($token);
 		# set client token name
-		$oauth_client->setAccessTokenParamName('oauth2_access_token');
+		$client->setAccessTokenParamName('oauth2_access_token');
 
 	}
 
