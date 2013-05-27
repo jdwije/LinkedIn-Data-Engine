@@ -170,7 +170,7 @@ class Linkedin extends CI_Model {
 				echo "<h3>$code</h3>";
 				if ($code == 200) {
 					# everything went ok
-					foreach($network->person as $row) {
+					foreach($network as $row) {
 						print_r($row);
 					}
 				}
