@@ -35,7 +35,7 @@ class Linkedin extends CI_Model {
 		# load the settings conguration from the database and store in object
 		$this->api_daily_limit = $this->db->query("SELECT max_fetched_per_day FROM lde_settings WHERE id = '$active_id' LIMIT 1")->row(1)->max_fetched_per_day;
 		# get current fetch count
-		$this->api_fetch_count = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetch_count;
+		$this->api_fetch_count = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
 	}
 
 	# do an oauth. !
@@ -146,7 +146,7 @@ class Linkedin extends CI_Model {
 		# cache settings
 		$active_settings = $this->active_settings;
 		$limit = $this->api_daily_limit;
-		$this->api_fetch_count = $this->db->query("SELECT fetch_count FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetch_count;
+		$this->api_fetch_count = $this->db->query("SELECT fetch_count FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
 		$fetch_count = $this->api_fetch_count;
 
 		# get the latest, fetched today count
