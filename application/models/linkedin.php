@@ -142,6 +142,8 @@ class Linkedin extends CI_Model {
 
 	# function recursively fetches a users contacts
 	# it is limited by the constraints set in the settings table
+	# @param $uid (INT) :: The system user id of the person we should fetch network contacts for
+	# @param $client (Object) :: A oauth2-php client object with the correct token and token name set for the given user already
 	private function recurse_fetch_network ($uid, $client) {
 		# cache settings
 		$active_settings = $this->active_settings;
@@ -149,30 +151,47 @@ class Linkedin extends CI_Model {
 		$fetch_count = $this->fetch_count;
 
 		# get the latest, fetched today count
-		$current_fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1);
-		$fetched_today = $current_fetched_today->fetched_today;
+		$fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1)->fetched_today;
+
+		# get how many connections we have fetched for this user to date
+		$particpant_data = $this->db->query("SELECT num_connections, connections_fetched FROM lde_participants WHERE id = '$uid' LIMIT 1")->row(1);
+		$participant_fetch_total = $particpant_data->connections_fetched;
+		$participant_network_total = $particpant_data->num_connections;
 
 		# only fetch if we havent exceeded out daily limit
 		if ($fetched_today < $limit) {
-
-			$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$start, 'count'=> $count) );
-			$network = new simplexml_load_string($network);
-			$code = $network['code'];
-
-			if ($code == 200) {
-				# everything went ok
-				foreach($network->person as $row) {
-					var_dump($row);
+			# make sure we  havent fetched all this users contacts already
+			if ($participant_fetch_total < $participant_network_total) {
+				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$start, 'count'=> $count) );
+				$network = new simplexml_load_string($network);
+				$code = $network['code'];
+				echo "<h3>$code</h3>";
+				if ($code == 200) {
+					# everything went ok
+					foreach($network->person as $row) {
+						print_r($row);
+					}
+				}
+				else if ($code == 403) {
+					# probably hit our data limit
+					echo "<h2>Data limit has been throttled for the day, resuming later.</h2>";
+				}
+				else {
+					# something else went wrong
+					echo "<h2>Something has gone wrong.</h2>";
 				}
 			}
-			else if ($code == 301) {
-				# probably hit our data limit
-			}
 			else {
-				# something else went wrong
+				# set this user to completed, clear this user from the schedule
+				echo "should remove user";
 			}
-
 		}
+	}	
+
+	# removes a user from the schedule
+	# @param $user_id (INT) :: The system id of the user to remove from the scheduel
+	private function remove_scheduled_user ( $user_id ) {
+
 	}
 
 	# function is called from CLI and runs the apps schedule for fetching participants network
@@ -184,9 +203,7 @@ class Linkedin extends CI_Model {
 	# runs routine on next scheduled user
 	private function do_next_scheduled_user () {
 		# get our next user. get there details
-		$result = $this->db->query("SELECT user_id FROM lde_schedule ORDER BY added_on ASC LIMIT 1");
-	    $row = $result->row(1); 
-		$uid = $row->user_id;
+		$uid = $this->get_next_sheduled_participant();
 		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$uid'")->row(1);
 		$token = $user->token;
 		# create client
@@ -196,12 +213,14 @@ class Linkedin extends CI_Model {
 		# set client token name
 		$client->setAccessTokenParamName('oauth2_access_token');
 		# fetch network info
-		$this->recurse_fetch_network($uid, $client, );
+		$this->recurse_fetch_network($uid, $client);
 	}
 
 	# get the UID for the next scheduled participant
 	private function get_next_sheduled_participant () {
-
+		$result = $this->db->query("SELECT user_id FROM lde_schedule ORDER BY added_on ASC LIMIT 1");
+	    $row = $result->row(1); 
+		return $row->user_id;
 	}
 
 }
