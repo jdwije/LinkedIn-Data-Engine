@@ -189,6 +189,7 @@ class Linkedin extends CI_Model {
 
 						# iterate this persons prior positions
 						foreach ($positions as $position) {
+							var_dump($position);
 							# cache the values
 							$p_linkedin_id = $position->id;
 							$p_title = $position->title;
