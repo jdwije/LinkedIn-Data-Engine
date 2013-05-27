@@ -158,7 +158,9 @@ class Linkedin extends CI_Model {
 		$participant_fetch_total = $particpant_data->connections_fetched;
 		# how many connections this user has in total
 		$participant_network_total = $particpant_data->num_connections;
-
+		echo $fetched_today . "<br>";
+		echo $this->api_fetch_count . "<br>";
+		echo $limit;
 		# only fetch if we havent exceeded out daily limit
 		if ($fetched_today < $limit) {
 			# make sure we  havent fetched all this users contacts already
@@ -169,7 +171,6 @@ class Linkedin extends CI_Model {
 				echo "<h3>$code</h3>";
 				if ($code == 200) {
 					# everything went ok
-
 					# iterate the data we got back
 					foreach($network->person as $person) {
 						# cache person data
