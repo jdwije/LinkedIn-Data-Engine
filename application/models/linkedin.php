@@ -165,8 +165,8 @@ class Linkedin extends CI_Model {
 			# make sure we  havent fetched all this users contacts already
 			if ($participant_fetch_total < $participant_network_total) {
 				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
-				$network = simplexml_load_string($network);
-				$code = $network['code'];
+				$network = simplexml_load_string($network_xml['results']);
+				$code = $network_xml['code'];
 				echo "<h3>$code</h3>";
 				if ($code == 200) {
 					# everything went ok
