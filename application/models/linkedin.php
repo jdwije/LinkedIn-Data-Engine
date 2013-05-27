@@ -93,8 +93,8 @@ class Linkedin extends CI_Model {
 			  							'$location_name','$location_country','$location_country_code','$num_connections','','$current_time','0','$token','$token_expiry')");
 		   	# get last inserted id
 		   	$last_id = $this->db->insert_id();
-		   	# add last inserted user to the schedules table
-		   	$this->db->query("INSERT INTO lde_schedule VALUES ('$last_id','$current_time')");
+		   	# add last inserted user to the schedules table. insert '' for table id column
+		   	$this->db->query("INSERT INTO lde_schedule VALUES ('',$last_id','$current_time')");
 		}
 		/*  
 			This is where whe would do a reauthentication if we had the time e.g:
