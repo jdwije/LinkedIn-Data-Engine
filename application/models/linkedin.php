@@ -60,8 +60,10 @@ class Linkedin extends CI_Model {
 		$oauth_client->setAccessTokenParamName('oauth2_access_token');
 		# do fetch
 	   	$data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location)');
+	   	$connections_data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~/connections:(id)', array('start'=>0,'count'=>1));
 	   	# load xml
 	   	$xml = simplexml_load_string($data['result']);
+	   	$connections_xml = simplexml_load_string($connections_data);
 	   	# cache required values
 	   	$linkedin_id = $xml->id;
 	   	$fname = $xml->{'first-name'};
@@ -70,7 +72,6 @@ class Linkedin extends CI_Model {
 	   	$industry = $xml->industry;
 	   	# start suspect :: the number of connections returned by this kind of profile search is limited to 500
 	   	# might be an idea to remove it to save on data
-	   	$num_connections = $xml->{'num-connections'};
 	   	# :: end supect
 	   	$location_name = $xml->location->name;
 	   	$location_country = $xml->location->country->name;
@@ -79,11 +80,12 @@ class Linkedin extends CI_Model {
 	   	$current_time = date('y-m-d');
 	   	# check if participant exists before adding
 	   	$p_exists = $this->participant_exists($linkedin_id);
+	   	$num_connections = $connections_xml['count'];
 	   	# only update if the user doesnt already exist
 	   	if (!$p_exists) {
 	   		# user does not yet exists
 		   	$this->db->query("INSERT INTO lde_participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
-			  							'$location_name','$location_country','$location_country_code','','','$current_time','0','$token','$token_expiry')");
+			  							'$location_name','$location_country','$location_country_code','$num_connections','','$current_time','0','$token','$token_expiry')");
 		   	# get last inserted id
 		   	$last_id = $this->db->insert_id();
 		   	# add last inserted user to the schedules table
@@ -127,7 +129,9 @@ class Linkedin extends CI_Model {
 
 	# runs routine on next scheduled user
 	private function do_next_scheduled_user () {
-
+		$result = $this->db->query("SELECT user_id FROM lde_shedule ORDER BY added_on ASC LIMIT 1");
+	    $row = $result->row_array(1); 
+		$next_uid = $row['user_id'];
 	}
 
 	# get the UID for the next scheduled participant
