@@ -182,7 +182,7 @@ class Linkedin extends CI_Model {
 						$positions = mysql_real_escape_string($person->positions);
 						
 						# save person data
-						$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', $fname','$lname','$location_name','$location_code')");
+						$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code') ");
 
 						# get last inserted uid for this contact
 						$contact_uid = $this->db->insert_id();
