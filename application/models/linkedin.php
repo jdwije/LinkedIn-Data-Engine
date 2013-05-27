@@ -63,7 +63,7 @@ class Linkedin extends CI_Model {
 	   	$connections_data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~/connections:(id)', array('start'=>0,'count'=>1));
 	   	# load xml
 	   	$xml = simplexml_load_string($data['result']);
-	   	$connections_xml = simplexml_load_string($connections_data);
+	   	$connections_xml = simplexml_load_string($connections_data['result']);
 	   	# cache required values
 	   	$linkedin_id = $xml->id;
 	   	$fname = $xml->{'first-name'};
