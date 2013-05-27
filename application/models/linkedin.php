@@ -60,10 +60,8 @@ class Linkedin extends CI_Model {
 		$oauth_client->setAccessTokenParamName('oauth2_access_token');
 		# do fetch
 	   	$data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location)');
-	   	$connections_data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~/connections:(id)', array('start'=>0,'count'=>1));
 	   	# load xml
 	   	$xml = simplexml_load_string($data['result']);
-	   	$connections_xml = simplexml_load_string($connections_data['result']);
 	   	# cache required values
 	   	$linkedin_id = $xml->id;
 	   	$fname = $xml->{'first-name'};
@@ -80,14 +78,18 @@ class Linkedin extends CI_Model {
 	   	$current_time = date('y-m-d');
 	   	# check if participant exists before adding
 	   	$p_exists = $this->participant_exists($linkedin_id);
-	   	$num_connections;
-	   	foreach ($connections_xml->attributes() as $attr => $val) {
-	   		if ($attr == 'total') {
-	   			$num_connections = $val;
-	   		}
-	   	}
 	   	# only update if the user doesnt already exist
 	   	if (!$p_exists) {
+	   		# figure out number of connections
+	   		# added here so we only call if required to save on data
+		   	$connections_data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~/connections:(id)', array('start'=>0,'count'=>1));
+		   	$connections_xml = simplexml_load_string($connections_data['result']);
+		   	$num_connections;
+		   	foreach ($connections_xml->attributes() as $attr => $val) {
+		   		if ($attr == 'total') {
+		   			$num_connections = $val;
+		   		}
+		   	}
 	   		# user does not yet exists
 		   	$this->db->query("INSERT INTO lde_participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
 			  							'$location_name','$location_country','$location_country_code','$num_connections','','$current_time','0','$token','$token_expiry')");
