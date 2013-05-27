@@ -33,8 +33,6 @@ class Linkedin extends CI_Model {
 		$active_id = $this->active_settings;
 
 		# load the settings conguration from the database and store in object
-		$active_settings = ;
-		$act_settings_row = $active_settings->row(1);
 		$this->api_daily_limit = $this->db->query("SELECT max_fetched_per_day FROM lde_settings WHERE id = '$active_id' LIMIT 1")->row(1)->max_fetched_per_day;
 		# get current fetch count
 		$this->api_fetch_count = $this->db->query("SELECT fetch_count FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetch_count;
