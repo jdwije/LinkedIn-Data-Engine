@@ -94,7 +94,7 @@ class Linkedin extends CI_Model {
 		   	# get last inserted id
 		   	$last_id = $this->db->insert_id();
 		   	# add last inserted user to the schedules table. insert '' for table id column
-		   	$this->db->query("INSERT INTO lde_schedule VALUES ('',$last_id','$current_time')");
+		   	$this->db->query("INSERT INTO lde_schedule VALUES ('','$last_id','$current_time')");
 		}
 		/*  
 			This is where whe would do a reauthentication if we had the time e.g:
