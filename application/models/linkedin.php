@@ -202,8 +202,9 @@ class Linkedin extends CI_Model {
 						}	
 						# all finished for this person						
 					}
+					$new_count = $fetched_today + $fetch_count;
 					# update our apps global settings/constraints before continuing
-					$update_sys = $this->db->query("UPDATE lde_active_brain SET fetched_today = fetched_today + $fetch_count WHERE id = 1");
+					$update_sys = $this->db->query("UPDATE lde_active_brain SET fetched_today = '$new_count' WHERE id = '1'");
 				}
 				else if ($code == 403) {
 					# probably hit our data limit
