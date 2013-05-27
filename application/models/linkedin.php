@@ -188,7 +188,7 @@ class Linkedin extends CI_Model {
 						$contact_uid = $this->db->insert_id();
 
 						# iterate this persons prior positions
-						foreach ($positions as $position) {
+						foreach ($positions['position'] as $position) {
 							var_dump($position);
 							# cache the values
 							$p_linkedin_id = $position->id;
