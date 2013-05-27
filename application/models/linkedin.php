@@ -151,6 +151,7 @@ class Linkedin extends CI_Model {
 		### cache settings
 		# what settings config to use
 		$active_settings = $this->active_settings;
+		echo $active_settings;
 		# our global limit to check against
 		$limit = $this->api_daily_limit;
 		# how many calls we have made so far today. update our pclass property for this as well
