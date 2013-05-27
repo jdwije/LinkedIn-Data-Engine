@@ -207,7 +207,7 @@ class Linkedin extends CI_Model {
 						}	
 						# all finished for this person						
 					}
-					$new_count = $fetched_today + $fetch_count;
+					$new_count = $num_fetched_today + $network->count();
 					# update our apps global settings/constraints before continuing
 					$update_sys = $this->db->query("UPDATE lde_active_brain SET fetched_today = '$new_count' WHERE id = '1'");
 				}
