@@ -184,7 +184,7 @@ class Linkedin extends CI_Model {
 	# runs routine on next scheduled user
 	private function do_next_scheduled_user () {
 		# get our next user. get there details
-		$result = $this->db->query("SELECT user_id FROM lde_shedule ORDER BY added_on ASC LIMIT 1");
+		$result = $this->db->query("SELECT user_id FROM lde_schedule ORDER BY added_on ASC LIMIT 1");
 	    $row = $result->row_array(1); 
 		$next_uid = $row->user_id;
 		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$next_uid'")->row(0);
