@@ -82,7 +82,7 @@ class Linkedin extends CI_Model {
 	   	$p_exists = $this->participant_exists($linkedin_id);
 	   	$num_connections;
 	   	foreach ($connections_xml->attributes() as $att => $val) {
-	   		if ($a == 'count') {
+	   		if ($a == 'total') {
 	   			$num_connections = $val;
 	   		}
 	   	}
