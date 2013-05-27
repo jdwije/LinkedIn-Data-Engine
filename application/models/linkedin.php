@@ -35,8 +35,8 @@ class Linkedin extends CI_Model {
 		# load the settings conguration from the database and store in object
 		$active_settings = $this->db->query("SELECT * FROM lde_settings WHERE id = '$active_id' LIMIT 1");
 		$act_settings_row = $active_settings->row(1);
-		$this->api_daily_limit = $act_settings_row['max_fetched_per_day'];
-		$this->api_fetch_count = $act_settings_row['fetch_count'];
+		$this->api_daily_limit = $act_settings_row->max_fetched_per_day;
+		$this->api_fetch_count = $act_settings_row->fetch_count;
 
 	}
 
@@ -150,7 +150,7 @@ class Linkedin extends CI_Model {
 
 		# get the latest, fetched today count
 		$current_fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1);
-		$fetched_today = $current_fetched_today['fetched_today'];
+		$fetched_today = $current_fetched_today->fetched_today;
 
 		# only fetch if we havent exceeded out daily limit
 		if ($fetched_today < $limit) {
@@ -186,9 +186,9 @@ class Linkedin extends CI_Model {
 		# get our next user. get there details
 		$result = $this->db->query("SELECT user_id FROM lde_shedule ORDER BY added_on ASC LIMIT 1");
 	    $row = $result->row_array(1); 
-		$next_uid = $row['user_id'];
+		$next_uid = $row->user_id;
 		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$next_uid'")->row(0);
-		$token = $user['token'];
+		$token = $user->token;
 
 		# create client
 		$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
