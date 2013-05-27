@@ -80,7 +80,12 @@ class Linkedin extends CI_Model {
 	   	$current_time = date('y-m-d');
 	   	# check if participant exists before adding
 	   	$p_exists = $this->participant_exists($linkedin_id);
-	   	$num_connections = $connections_xml['count'];
+	   	$num_connections;
+	   	foreach ($connections_xml->attributes() as $att => $val) {
+	   		if ($a == 'count') {
+	   			$num_connections = $val;
+	   		}
+	   	}
 	   	# only update if the user doesnt already exist
 	   	if (!$p_exists) {
 	   		# user does not yet exists
