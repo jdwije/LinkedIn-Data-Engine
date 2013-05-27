@@ -142,7 +142,7 @@ class Linkedin extends CI_Model {
 
 	# function recursively fetches a users contacts
 	# it is limited by the constraints set in the settings table
-	private function recurse_fetch_network ($uid, $client, $token) {
+	private function recurse_fetch_network ($uid, $client) {
 		# cache settings
 		$active_settings = $this->active_settings;
 		$limit = $this->api_daily_limit;
@@ -186,18 +186,17 @@ class Linkedin extends CI_Model {
 		# get our next user. get there details
 		$result = $this->db->query("SELECT user_id FROM lde_schedule ORDER BY added_on ASC LIMIT 1");
 	    $row = $result->row(1); 
-		$next_uid = $row->user_id;
-		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$next_uid'")->row(1);
+		$uid = $row->user_id;
+		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$uid'")->row(1);
 		$token = $user->token;
-		echo $next_uid ."<br >";
-		echo $token;
 		# create client
 		$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
 		# set access token
 		$client->setAccessToken($token);
 		# set client token name
 		$client->setAccessTokenParamName('oauth2_access_token');
-
+		# fetch network info
+		$this->recurse_fetch_network($uid, $client, );
 	}
 
 	# get the UID for the next scheduled participant
