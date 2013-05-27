@@ -146,7 +146,7 @@ class Linkedin extends CI_Model {
 		# cache settings
 		$active_settings = $this->active_settings;
 		$limit = $this->api_daily_limit;
-		$this->api_fetch_count = $this->db->query("SELECT fetch_count FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
+		$this->api_fetch_count = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
 		$fetch_count = $this->api_fetch_count;
 
 		# get the latest, fetched today count
