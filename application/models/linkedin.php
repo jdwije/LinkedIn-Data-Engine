@@ -250,23 +250,32 @@ class Linkedin extends CI_Model {
 	private function do_next_scheduled_user () {
 		# get our next user. get there details
 		$uid = $this->get_next_sheduled_participant();
-		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$uid'")->row(1);
-		$token = $user->token;
-		# create client
-		$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
-		# set access token
-		$client->setAccessToken($token);
-		# set client token name
-		$client->setAccessTokenParamName('oauth2_access_token');
-		# fetch network info
-		$this->fetch_network($uid, $client);
+		if ($uid !== 'none left') {
+			$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$uid'")->row(1);
+			$token = $user->token;
+			# create client
+			$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
+			# set access token
+			$client->setAccessToken($token);
+			# set client token name
+			$client->setAccessTokenParamName('oauth2_access_token');
+			# fetch network info
+			$this->fetch_network($uid, $client);
+		}
+		else {
+			die();
+		}
 	}
 
 	# get the UID for the next scheduled participant
 	private function get_next_sheduled_participant () {
 		$result = $this->db->query("SELECT user_id FROM lde_schedule ORDER BY added_on ASC LIMIT 1");
-	    $row = $result->row(1); 
-		return $row->user_id;
+		$r = 'none left';
+		if ($result->num_rows() > 0) {
+			$row = $result->row(1); 
+			$r = $row->user_id;
+		}
+		return $r;
 	}
 
 }
