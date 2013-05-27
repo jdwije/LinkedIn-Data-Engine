@@ -188,7 +188,6 @@ class Linkedin extends CI_Model {
 
 						# iterate this persons prior positions
 						foreach ($person->positions->position as $position) {
-							var_dump($position);
 							# cache the values
 							$p_linkedin_id = $position->id;
 							$p_title = $position->title;
@@ -198,10 +197,9 @@ class Linkedin extends CI_Model {
 							$p_company_name = $position->company->name;
 							$p_company_size = $position->company->size;
 							$p_company_industry = $position->company->industry;
-							echo $p_title . " " . $p_start_date .  " " . $p_linkedin_id;
 							# save the values
 							$save_positions = $this->db->query("INSERT INTO lde_positions VALUES('','$p_linkedin_id', '$contact_uid','2','$p_title',
-																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', $p_company_industry)");
+																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', '$p_company_industry')");
 						}	
 						# yay all finished for this person now lets update our apps global settings/constraints before continuing
 
