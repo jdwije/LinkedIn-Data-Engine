@@ -33,11 +33,11 @@ class Linkedin extends CI_Model {
 		$active_id = $this->active_settings;
 
 		# load the settings conguration from the database and store in object
-		$active_settings = $this->db->query("SELECT * FROM lde_settings WHERE id = '$active_id' LIMIT 1");
+		$active_settings = ;
 		$act_settings_row = $active_settings->row(1);
-		$this->api_daily_limit = $act_settings_row->max_fetched_per_day;
-		$this->api_fetch_count = $act_settings_row->fetch_count;
-
+		$this->api_daily_limit = $this->db->query("SELECT max_fetched_per_day FROM lde_settings WHERE id = '$active_id' LIMIT 1")->row(1)->max_fetched_per_day;
+		# get current fetch count
+		$this->api_fetch_count = $this->db->query("SELECT fetch_count FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetch_count;
 	}
 
 	# do an oauth. !
@@ -148,6 +148,7 @@ class Linkedin extends CI_Model {
 		# cache settings
 		$active_settings = $this->active_settings;
 		$limit = $this->api_daily_limit;
+		$this->api_fetch_count = $this->db->query("SELECT fetch_count FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetch_count;
 		$fetch_count = $this->api_fetch_count;
 
 		# get the latest, fetched today count
@@ -201,9 +202,10 @@ class Linkedin extends CI_Model {
 							$save_positions = $this->db->query("INSERT INTO lde_positions VALUES('','$p_linkedin_id', '$contact_uid','2','$p_title',
 																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', '$p_company_industry')");
 						}	
-						# yay all finished for this person now lets update our apps global settings/constraints before continuing
-
+						# all finished for this person						
 					}
+					# update our apps global settings/constraints before continuing
+					$update_sys = $this->db->query("UPDATE lde_active_brain SET fetched_today = fetched_today + $fetch_count WHERE id = 1");
 				}
 				else if ($code == 403) {
 					# probably hit our data limit
