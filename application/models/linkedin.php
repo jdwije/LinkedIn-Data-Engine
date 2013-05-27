@@ -193,7 +193,7 @@ class Linkedin extends CI_Model {
 							$p_linkedin_id = $position->id;
 							$p_title = $position->title;
 							$p_start_date = $position->{'start-date'}->year . "-" . $position->{'start-date'}->month . "-01";
-							$p_end_date = $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01";
+							$p_end_date =  $position->{'end-date'}->year != '' ? $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01" : '';
 							$p_is_current = $position->{'is-current'} == true ? 1 : 0;
 							$p_company_name = $position->company->name;
 							$p_company_size = $position->company->size;
