@@ -157,7 +157,7 @@ class Linkedin extends CI_Model {
 		$num_fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1)->fetched_today;
 		$this->num_fetched_today = $num_fetched_today;
 		# how many contacts we should fetch per request
-		$fetch_count = $this->fetch_count;
+		$fetch_count = $this->api_fetch_count;
 		# some particpant data
 		$particpant_data = $this->db->query("SELECT num_connections, connections_fetched FROM lde_participants WHERE id = '$uid' LIMIT 1")->row(1);
 		# how many connections we have fetched for this user to date i.e. where to begin
@@ -178,11 +178,11 @@ class Linkedin extends CI_Model {
 					# iterate the data we got back
 					foreach($network->person as $person) {
 						# cache person data
-						$linkedin_id = $person->id;
-						$fname = $person->{'first-name'};
-						$lname = $person->{'last-name'};
-						$location_name = $person->location->name;
-						$location_code = $person->location->country->code;
+						$linkedin_id = mysql_real_escape_string($person->id);
+						$fname = mysql_real_escape_string($person->{'first-name'});
+						$lname = mysql_real_escape_string($person->{'last-name'});
+						$location_name = mysql_real_escape_string($person->location->name);
+						$location_code = mysql_real_escape_string($person->location->country->code);
 						
 						# save person data
 						$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code') ");
@@ -193,14 +193,14 @@ class Linkedin extends CI_Model {
 						# iterate this persons prior positions
 						foreach ($person->positions->position as $position) {
 							# cache the values
-							$p_linkedin_id = $position->id;
-							$p_title = $position->title;
-							$p_start_date = $position->{'start-date'}->year . "-" . $position->{'start-date'}->month . "-01";
-							$p_end_date =  $position->{'end-date'}->year != '' ? $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01" : '';
-							$p_is_current = $position->{'is-current'} == true ? 1 : 0;
-							$p_company_name = $position->company->name;
-							$p_company_size = $position->company->size;
-							$p_company_industry = $position->company->industry;
+							$p_linkedin_id = mysql_real_escape_string($position->id);
+							$p_title =mysql_real_escape_string($position->title);
+							$p_start_date = mysql_real_escape_string(  $position->{'start-date'}->year . "-" . $position->{'start-date'}->month . "-01" );
+							$p_end_date =  mysql_real_escape_string( $position->{'end-date'}->year != '' ? $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01" : '' );
+							$p_is_current = mysql_real_escape_string( $position->{'is-current'} == true ? 1 : 0 );
+							$p_company_name = mysql_real_escape_string($position->company->name);
+							$p_company_size = mysql_real_escape_string($position->company->size);
+							$p_company_industry = mysql_real_escape_string($position->company->industry);
 							# save the values
 							$save_positions = $this->db->query("INSERT INTO lde_positions VALUES('','$p_linkedin_id', '$contact_uid','2','$p_title',
 																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', '$p_company_industry')");
