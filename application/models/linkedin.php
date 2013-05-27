@@ -164,14 +164,46 @@ class Linkedin extends CI_Model {
 		if ($fetched_today < $limit) {
 			# make sure we  havent fetched all this users contacts already
 			if ($participant_fetch_total < $participant_network_total) {
-				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
+				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,location,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
 				$network = simplexml_load_string($network_xml['result']);
 				$code = $network_xml['code'];
 				echo "<h3>$code</h3>";
 				if ($code == 200) {
 					# everything went ok
-					foreach($network->person as $row) {
-						print_r($row);
+
+					# iterate the data we got back
+					foreach($network->person as $person) {
+						# cache person data
+						$linkedin_id = $person->id;
+						$fname = $person->{'first-name'};
+						$lname = $person->{'last-name'};
+						$location_name = $person->location->name;
+						$location_code = $person->location->code;
+						$positions = $person->positions;
+							
+						# save person data
+						$save_person = $this->db->query("INSERT IGNORE INTO lde_network VALUES('','$linkedin_id','$uid', $fname','$lname','$location_name', '$location_code')");
+
+						# get last inserted uid for this contact
+						$contact_uid = $this->db->insert_id();
+
+						# iterate this persons prior positions
+						foreach ($positions as $position) {
+							# cache the values
+							$p_linkedin_id = $position->id;
+							$p_title = $position->title;
+							$p_start_date = $position->{'start-date'}->year . "-" . $position->{'start-date'}->month . "-01";
+							$p_end_date = $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01";
+							$p_is_current = $position->{'is-current'} == true ? 1 : 0;
+							$p_company_name = $position->company->name;
+							$p_company_size = $position->company->size;
+							$p_company_industry = $position->company->industry;
+							# save the values
+							$save_positions = $this->db->query("INSERT IGNORE INTO lde_positions VALUES('','$p_linkedin_id', '$contact_uid','2','$p_title',
+																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', $p_company_industry)");
+						}	
+						# yay all finished for this person now lets update our apps global settings/constraints before continuing
+						
 					}
 				}
 				else if ($code == 403) {
