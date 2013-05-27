@@ -59,7 +59,7 @@ class Linkedin extends CI_Model {
 		# set client token
 		$oauth_client->setAccessTokenParamName('oauth2_access_token');
 		# do fetch
-	   	$data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location,num-connections)');
+	   	$data = $oauth_client->fetch('https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,industry,location)');
 	   	# load xml
 	   	$xml = simplexml_load_string($data['result']);
 	   	# cache required values
@@ -68,7 +68,10 @@ class Linkedin extends CI_Model {
 	   	$lname = $xml->{'last-name'};
 	   	$email =  $xml->{'email-address'};
 	   	$industry = $xml->industry;
+	   	# start suspect :: the number of connections returned by this kind of profile search is limited to 500
+	   	# might be an idea to remove it to save on data
 	   	$num_connections = $xml->{'num-connections'};
+	   	# :: end supect
 	   	$location_name = $xml->location->name;
 	   	$location_country = $xml->location->country->name;
 	   	$location_country_code = $xml->location->country->code;
@@ -79,20 +82,57 @@ class Linkedin extends CI_Model {
 	   	# only update if the user doesnt already exist
 	   	if (!$p_exists) {
 	   		# user does not yet exists
-		   	$this->db->query("INSERT INTO participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
-		   							'$location_name','$location_country','$location_country_code','$num_connections','$current_time','0','$token','$token_expiry')");
+		   	$this->db->query("INSERT INTO lde_participants VALUES ('','$linkedin_id','$fname','$lname','$email','$industry',
+			  							'$location_name','$location_country','$location_country_code','','','$current_time','0','$token','$token_expiry')");
+		   	# get last inserted id
+		   	$last_id = $this->db->insert_id();
+		   	# add last inserted user to the schedules table
+		   	$this->db->query("INSERT INTO lde_schedule VALUES ('$last_id','$current_time')");
 		}
+		/*  
+			This is where whe would do a reauthentication if we had the time e.g:
+			else {
+				# do reauth...
+			}
+		*/
+
 		# do redirect
    	   	header('Location: ' . site_url('access_granted'));
+
+   	   	# kill
 	   	die('Redirect');
 	}
-
+		
 	# checks if particip[ant is already registerd
 	# @param $linkedin_id (String) :: A linked in profile id
 	# @returns $result (Boolean) :: true or false if participants exists or not
 	private function participant_exists($linkedin_id) {
-		$result = $this->db->query("SELECT linkedin_id FROM participants WHERE linkedin_id = '$linkedin_id'");
+		# search participants for linkedin id
+		$result = $this->db->query("SELECT linkedin_id FROM lde_participants WHERE linkedin_id = '$linkedin_id'");
+		# if we have no rows matching return false 
 		return $result->num_rows() < 1 ? false : true;
+	}
+
+	# function recursively fetches a users contacts
+	# it is limited by the constraints set in the settings table
+	private function recurse_fetch_network ($uid, $client, $start = 0, $count = 100, $limit = null) {
+		
+	}
+
+	# function is called from CLI and runs the apps schedule for fetching participants network
+	# connections
+	public function run_schedule () {
+		$this->do_next_scheduled_user();
+	}
+
+	# runs routine on next scheduled user
+	private function do_next_scheduled_user () {
+
+	}
+
+	# get the UID for the next scheduled participant
+	private function get_next_sheduled_participant () {
+
 	}
 
 }
