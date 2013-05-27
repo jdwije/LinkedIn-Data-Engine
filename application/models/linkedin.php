@@ -178,11 +178,11 @@ class Linkedin extends CI_Model {
 						$fname = $person->{'first-name'};
 						$lname = $person->{'last-name'};
 						$location_name = $person->location->name;
-						$location_code = $person->location->code;
+						$location_code = $person->location->country->code;
 						$positions = $person->positions;
-							
+						
 						# save person data
-						$save_person = $this->db->query("INSERT IGNORE INTO lde_network VALUES('','$linkedin_id','$uid', $fname','$lname','$location_name', '$location_code')");
+						$save_person = $this->db->query("INSERT INTO lde_network VALUES('','$linkedin_id','$uid', $fname','$lname','$location_name', '$location_code')");
 
 						# get last inserted uid for this contact
 						$contact_uid = $this->db->insert_id();
@@ -203,7 +203,7 @@ class Linkedin extends CI_Model {
 																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', $p_company_industry)");
 						}	
 						# yay all finished for this person now lets update our apps global settings/constraints before continuing
-						
+
 					}
 				}
 				else if ($code == 403) {
