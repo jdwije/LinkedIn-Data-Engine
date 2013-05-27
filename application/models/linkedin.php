@@ -84,17 +84,17 @@ class Linkedin extends CI_Model {
 	   	# load xml
 	   	$xml = simplexml_load_string($data['result']);
 	   	# cache required values
-	   	$linkedin_id = $xml->id;
-	   	$fname = $xml->{'first-name'};
-	   	$lname = $xml->{'last-name'};
-	   	$email =  $xml->{'email-address'};
-	   	$industry = $xml->industry;
+	   	$linkedin_id = mysql_real_escape_string($xml->id);
+	   	$fname = mysql_real_escape_string($xml->{'first-name'});
+	   	$lname = mysql_real_escape_string($xml->{'last-name'});
+	   	$email =  mysql_real_escape_string($xml->{'email-address'});
+	   	$industry = mysql_real_escape_string($xml->industry);
 	   	# start suspect :: the number of connections returned by this kind of profile search is limited to 500
 	   	# might be an idea to remove it to save on data
 	   	# :: end supect
-	   	$location_name = $xml->location->name;
-	   	$location_country = $xml->location->country->name;
-	   	$location_country_code = $xml->location->country->code;
+	   	$location_name = mysql_real_escape_string($xml->location->name);
+	   	$location_country = mysql_real_escape_string($xml->location->country->name);
+	   	$location_country_code = mysql_real_escape_string($xml->location->country->code);
 	   	# set current date time
 	   	$current_time = date('y-m-d');
 	   	# check if participant exists before adding
@@ -208,6 +208,12 @@ class Linkedin extends CI_Model {
 						# all finished for this person						
 					}
 					$new_count = $num_fetched_today + $network->count();
+					echo $new_count;
+					echo "<br />";
+					echo $network->count();
+					echo "<br />";
+					echo $num_fetched_today;
+					# update our user data
 					# update our apps global settings/constraints before continuing
 					$update_sys = $this->db->query("UPDATE lde_active_brain SET fetched_today = '$new_count' WHERE id = '1'");
 				}
