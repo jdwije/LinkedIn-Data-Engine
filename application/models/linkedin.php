@@ -148,21 +148,23 @@ class Linkedin extends CI_Model {
 		# cache settings
 		$active_settings = $this->active_settings;
 		$limit = $this->api_daily_limit;
-		$fetch_count = $this->fetch_count;
+		$fetch_count = $this->api_fetch_count;
 
 		# get the latest, fetched today count
 		$fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1)->fetched_today;
 
 		# get how many connections we have fetched for this user to date
 		$particpant_data = $this->db->query("SELECT num_connections, connections_fetched FROM lde_participants WHERE id = '$uid' LIMIT 1")->row(1);
+		# how many connections we have fetched for this user to date i.e. where to begin
 		$participant_fetch_total = $particpant_data->connections_fetched;
+		# how many connections this user has in total
 		$participant_network_total = $particpant_data->num_connections;
 
 		# only fetch if we havent exceeded out daily limit
 		if ($fetched_today < $limit) {
 			# make sure we  havent fetched all this users contacts already
 			if ($participant_fetch_total < $participant_network_total) {
-				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$start, 'count'=> $count) );
+				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
 				$network = new simplexml_load_string($network);
 				$code = $network['code'];
 				echo "<h3>$code</h3>";
