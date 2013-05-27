@@ -11,6 +11,11 @@ class Linkedin extends CI_Model {
 	const TOKEN_ENDPOINT         = 'https://www.linkedin.com/uas/oauth2/accessToken';
 	const APP_STATE = '413E7FA26978F9F447BCF1173B9D6';
 
+	# what settings configuration to use from the database
+	private $active_settings;
+	private $api_daily_limit;
+	private $api_fetch_count;
+
 	# builds our object
 	function __construct()
 	{	
@@ -20,6 +25,19 @@ class Linkedin extends CI_Model {
 		require('resources/libs/php-oauth2/Client.php');
 		require('resources/libs/php-oauth2/GrantType/IGrantType.php');
 		require('resources/libs/php-oauth2/GrantType/AuthorizationCode.php');
+
+		# figure out what settings we are using
+		$settings_query = $this->db->query("SELECT * FROM lde_active_brain LIMIT 1");
+		$settings_row = $settings_query->row(1);
+		$this->active_settings = $settings_row['active_configuration'];
+		$active_id = $this->active_settings;
+
+		# load the settings conguration from the database and store in object
+		$active_settings = $this->db->query("SELECT * FROM lde_settings WHERE id = '$active_id' LIMIT 1");
+		$act_settings_row = $active_settings->row(1);
+		$this->api_daily_limit = $act_settings_row['max_fetched_per_day'];
+		$this->api_fetch_count = $act_settings_row['fetch_count'];
+
 	}
 
 	# do an oauth. !
@@ -124,8 +142,37 @@ class Linkedin extends CI_Model {
 
 	# function recursively fetches a users contacts
 	# it is limited by the constraints set in the settings table
-	private function recurse_fetch_network ($uid, $client, $start = 0, $count = 100, $limit = null) {
+	private function recurse_fetch_network ($uid, $client, $token) {
+		# cache settings
+		$active_settings = $this->active_settings;
+		$limit = $this->api_daily_limit;
+		$fetch_count = $this->fetch_count;
 		
+		# get the latest, fetched today count
+		$current_fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1);
+		$fetched_today = $current_fetched_today['fetched_today'];
+
+		# only fetch if we havent exceeded out daily limit
+		if ($fetched_today < $limit) {
+
+			$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(first-name,last-name,positions)', array('start'=>$start, 'count'=> $count) );
+			$network = new simplexml_load_string($network);
+			$code = $network['code'];
+
+			if ($code == 200) {
+				# everything went ok
+				foreach($network->person as $row) {
+					var_dump($row);
+				}
+			}
+			else if ($code == 301) {
+				# probably hit our data limit
+			}
+			else {
+				# something else went wrong
+			}
+
+		}
 	}
 
 	# function is called from CLI and runs the apps schedule for fetching participants network
@@ -136,9 +183,20 @@ class Linkedin extends CI_Model {
 
 	# runs routine on next scheduled user
 	private function do_next_scheduled_user () {
+		# get our next user. get there details
 		$result = $this->db->query("SELECT user_id FROM lde_shedule ORDER BY added_on ASC LIMIT 1");
 	    $row = $result->row_array(1); 
 		$next_uid = $row['user_id'];
+		$user = $this->db->query("SELECT * FROM lde_participants WHERE id = '$next_uid'")->row(0);
+		$token = $user['token'];
+
+		# create client
+		$client = new OAuth2\Client(self::CLIENT_ID, self::CLIENT_SECRET);
+		# set access token
+		$client->setAccessToken($token);
+		# set client token name
+		$oauth_client->setAccessTokenParamName('oauth2_access_token');
+
 	}
 
 	# get the UID for the next scheduled participant

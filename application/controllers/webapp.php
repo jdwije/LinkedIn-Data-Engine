@@ -59,6 +59,10 @@ class Webapp extends CI_Controller {
 		$this->load->view('templates/footer', $data);
 	}
 
+	public function do_schedule () {
+		$this->linkedin->run_schedule();
+	} 
+
 }
 
 

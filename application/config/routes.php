@@ -37,6 +37,8 @@
 | in the URL cannot be matched to a valid route.
 |
 */
+
+$route['run_robot'] = 'webapp/do_schedule';
 $route['access_granted'] = 'webapp/access_granted';
 $route['authenticate'] = 'webapp/authenticate';
 $route['participate'] = 'webapp/authorize';
