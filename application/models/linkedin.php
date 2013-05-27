@@ -147,7 +147,7 @@ class Linkedin extends CI_Model {
 	# it is limited by the constraints set in the settings table
 	# @param $uid (INT) :: The system user id of the person we should fetch network contacts for
 	# @param $client (Object) :: A oauth2-php client object with the correct token and token name set for the given user already
-	private function recurse_fetch_network ($uid, $client) {
+	private function fetch_network ($uid, $client) {
 		### cache settings
 		# what settings config to use
 		$active_settings = $this->active_settings;
@@ -263,7 +263,7 @@ class Linkedin extends CI_Model {
 		# set client token name
 		$client->setAccessTokenParamName('oauth2_access_token');
 		# fetch network info
-		$this->recurse_fetch_network($uid, $client);
+		$this->fetch_network($uid, $client);
 	}
 
 	# get the UID for the next scheduled participant
