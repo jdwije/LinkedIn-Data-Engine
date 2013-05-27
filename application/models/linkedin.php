@@ -15,6 +15,7 @@ class Linkedin extends CI_Model {
 	private $active_settings;
 	private $api_daily_limit;
 	private $api_fetch_count;
+	private $num_fetched_today;
 
 	# builds our object
 	function __construct()
@@ -33,9 +34,13 @@ class Linkedin extends CI_Model {
 		$active_id = $this->active_settings;
 
 		# load the settings conguration from the database and store in object
-		$this->api_daily_limit = $this->db->query("SELECT max_fetched_per_day FROM lde_settings WHERE id = '$active_id' LIMIT 1")->row(1)->max_fetched_per_day;
-		# get current fetch count
-		$this->api_fetch_count = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
+		$settings = $this->db->query("SELECT max_fetched_per_day, fetch_count FROM lde_settings WHERE id = '$active_id' LIMIT 1")->row(1);
+		# get the maximum number of fetches allowed per day as defined in our settings
+		$this->api_daily_limit = $settings->max_fetched_per_day;
+		# get the number of contacts to fetch per request as defined in our settings
+		$this->api_fetch_count = $settings->fetch_count;
+		# get the number of fetches we have performed so far today
+		$this->num_fetched_today = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
 	}
 
 	# do an oauth. !
@@ -143,26 +148,25 @@ class Linkedin extends CI_Model {
 	# @param $uid (INT) :: The system user id of the person we should fetch network contacts for
 	# @param $client (Object) :: A oauth2-php client object with the correct token and token name set for the given user already
 	private function recurse_fetch_network ($uid, $client) {
-		# cache settings
+		### cache settings
+		# what settings config to use
 		$active_settings = $this->active_settings;
+		# our global limit to check against
 		$limit = $this->api_daily_limit;
-		$this->api_fetch_count = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '1' LIMIT 1")->row(1)->fetched_today;
-		$fetch_count = $this->api_fetch_count;
-
-		# get the latest, fetched today count
-		$fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1)->fetched_today;
-
-		# get how many connections we have fetched for this user to date
+		# how many calls we have made so far today. update our pclass property for this as well
+		$num_fetched_today = $this->db->query("SELECT fetched_today FROM lde_settings WHERE id = '$active_settings' LIMIT 1")->row(1)->fetched_today;
+		$this->num_fetched_today = $num_fetched_today;
+		# how many contacts we should fetch per request
+		$fetch_count = $this->fetch_count;
+		# some particpant data
 		$particpant_data = $this->db->query("SELECT num_connections, connections_fetched FROM lde_participants WHERE id = '$uid' LIMIT 1")->row(1);
 		# how many connections we have fetched for this user to date i.e. where to begin
 		$participant_fetch_total = $particpant_data->connections_fetched;
 		# how many connections this user has in total
 		$participant_network_total = $particpant_data->num_connections;
-		echo $fetched_today . "<br>";
-		echo $this->api_fetch_count . "<br>";
-		echo $limit;
+
 		# only fetch if we havent exceeded out daily limit
-		if ($fetched_today < $limit) {
+		if ($num_fetched_today < $limit) {
 			# make sure we  havent fetched all this users contacts already
 			if ($participant_fetch_total < $participant_network_total) {
 				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,location,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
