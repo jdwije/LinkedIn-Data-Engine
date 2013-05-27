@@ -179,7 +179,6 @@ class Linkedin extends CI_Model {
 						$lname = mysql_real_escape_string($person->{'last-name'});
 						$location_name = mysql_real_escape_string($person->location->name);
 						$location_code = mysql_real_escape_string($person->location->country->code);
-						$positions = $person->positions;
 						
 						# save person data
 						$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code') ");
@@ -188,7 +187,7 @@ class Linkedin extends CI_Model {
 						$contact_uid = $this->db->insert_id();
 
 						# iterate this persons prior positions
-						foreach ($positions['position'] as $position) {
+						foreach ($person->positions as $position) {
 							var_dump($position);
 							# cache the values
 							$p_linkedin_id = $position->id;
