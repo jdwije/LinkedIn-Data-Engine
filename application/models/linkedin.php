@@ -214,19 +214,22 @@ class Linkedin extends CI_Model {
 					# update our apps global settings/constraints before continuing
 					$new_fetched_today = $num_fetched_today + $network->count();
 					$update_sys = $this->db->query("UPDATE lde_active_brain SET fetched_today = '$new_fetched_today' WHERE id = '1'");
+					$this->fetch_network($uid, $client);
 				}
 				else if ($code == 403) {
 					# probably hit our data limit
 					echo "<h2>Data limit has been throttled for the day, resuming later. Code: $code</h2>";
+					die();
 				}
 				else {
 					# something else went wrong
 					echo "<h2>Something has gone wrong. Code: $code</h2>";
+					die();
 				}
 			}
 			else {
 				# set this user to completed, clear this user from the schedule
-				echo "should remove user.";
+				$update_schedule = $this->db->query("DELETE FROM lde_schedule WHERE user_id = '$uid'");
 			}
 		}
 	}	
