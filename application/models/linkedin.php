@@ -155,7 +155,8 @@ class Linkedin extends CI_Model {
 		# our global limit to check against
 		$limit = $this->api_daily_limit;
 		# how many calls we have made so far today. update our pclass property for this as well
-		$num_fetched_today = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '$active_settings' LIMIT 1")->row(1)->fetched_today;
+		$get_fetched = $this->db->query("SELECT fetched_today FROM lde_active_brain WHERE id = '$active_settings' LIMIT 1");
+		$num_fetched_today = $get_fetched->row(1)->fetched_today;
 		$this->num_fetched_today = $num_fetched_today;
 		# how many contacts we should fetch per request
 		$fetch_count = $this->api_fetch_count;
