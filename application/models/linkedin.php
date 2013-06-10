@@ -132,7 +132,7 @@ class Linkedin extends CI_Model {
    	   	# kill
 	   	die('Redirect');
 	}
-		
+	
 	# checks if particip[ant is already registerd
 	# @param $linkedin_id (String) :: A linked in profile id
 	# @returns $result (Boolean) :: true or false if participants exists or not
@@ -151,7 +151,6 @@ class Linkedin extends CI_Model {
 		### cache settings
 		# what settings config to use
 		$active_settings = $this->active_settings;
-		echo $active_settings;
 		# our global limit to check against
 		$limit = $this->api_daily_limit;
 		# how many calls we have made so far today. update our pclass property for this as well
@@ -174,7 +173,6 @@ class Linkedin extends CI_Model {
 				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,location,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
 				$network = simplexml_load_string($network_xml['result']);
 				$code = $network_xml['code'];
-				echo "<h3>$code</h3>";
 				if ($code == 200) {
 					# everything went ok
 					# iterate the data we got back
