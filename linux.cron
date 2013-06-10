@@ -1,1 +1,1 @@
-curl --data "passcode=z39FimidbYKCxKDVerng" http://54.251.251.190/index.php/run_robot
+01 * * * * root curl --data "passcode=z39FimidbYKCxKDVerng" http://54.251.251.190/index.php/run_robot
