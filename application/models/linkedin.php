@@ -178,36 +178,40 @@ class Linkedin extends CI_Model {
 				if ($code == 200) {
 					# everything went ok
 					# iterate the data we got back
-					foreach($network->person as $person) {
-						# cache person data
-						$linkedin_id = mysql_real_escape_string($person->id);
-						$fname = mysql_real_escape_string($person->{'first-name'});
-						$lname = mysql_real_escape_string($person->{'last-name'});
-						$location_name = mysql_real_escape_string($person->location->name);
-						$location_code = mysql_real_escape_string($person->location->country->code);
-						
-						# save person data
-						$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code') ");
+					if ($network->person != null) {
+						foreach($network->person as $person) {
+							# cache person data
+							$linkedin_id = mysql_real_escape_string($person->id);
+							$fname = mysql_real_escape_string($person->{'first-name'});
+							$lname = mysql_real_escape_string($person->{'last-name'});
+							$location_name = mysql_real_escape_string($person->location->name);
+							$location_code = mysql_real_escape_string($person->location->country->code);
+							
+							# save person data
+							$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code') ");
 
-						# get last inserted uid for this contact
-						$contact_uid = $this->db->insert_id();
+							# get last inserted uid for this contact
+							$contact_uid = $this->db->insert_id();
 
-						# iterate this persons prior positions
-						foreach ($person->positions->position as $position) {
-							# cache the values
-							$p_linkedin_id = mysql_real_escape_string($position->id);
-							$p_title =mysql_real_escape_string($position->title);
-							$p_start_date = mysql_real_escape_string(  $position->{'start-date'}->year . "-" . $position->{'start-date'}->month . "-01" );
-							$p_end_date =  mysql_real_escape_string( $position->{'end-date'}->year != '' ? $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01" : '' );
-							$p_is_current = mysql_real_escape_string( $position->{'is-current'} == true ? 1 : 0 );
-							$p_company_name = mysql_real_escape_string($position->company->name);
-							$p_company_size = mysql_real_escape_string($position->company->size);
-							$p_company_industry = mysql_real_escape_string($position->company->industry);
-							# save the values
-							$save_positions = $this->db->query("INSERT INTO lde_positions VALUES('','$p_linkedin_id', '$contact_uid','2','$p_title',
-																	'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', '$p_company_industry')");
-						}	
-						# all finished for this person						
+							# iterate this persons prior positions
+							if ($person->positions->position != null) {
+								foreach ($person->positions->position as $position) {
+									# cache the values
+									$p_linkedin_id = mysql_real_escape_string($position->id);
+									$p_title =mysql_real_escape_string($position->title);
+									$p_start_date = mysql_real_escape_string(  $position->{'start-date'}->year . "-" . $position->{'start-date'}->month . "-01" );
+									$p_end_date =  mysql_real_escape_string( $position->{'end-date'}->year != '' ? $position->{'end-date'}->year . "-" . $position->{'end-date'}->month . "-01" : '' );
+									$p_is_current = mysql_real_escape_string( $position->{'is-current'} == true ? 1 : 0 );
+									$p_company_name = mysql_real_escape_string($position->company->name);
+									$p_company_size = mysql_real_escape_string($position->company->size);
+									$p_company_industry = mysql_real_escape_string($position->company->industry);
+									# save the values
+									$save_positions = $this->db->query("INSERT INTO lde_positions VALUES('','$p_linkedin_id', '$contact_uid','2','$p_title',
+																			'$p_start_date', '$p_end_date', '$p_is_current', '$p_company_name', '$p_company_size', '$p_company_industry')");
+								}	
+								# all finished for this person	
+							}					
+						}
 					}
 					# update our user data
 					$new_user_network_count = $participant_fetch_total + $network->count();
