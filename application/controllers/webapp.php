@@ -60,7 +60,13 @@ class Webapp extends CI_Controller {
 	}
 
 	public function do_schedule () {
-		$this->linkedin->run_schedule();
+		@$passcode = $_POST['passcode'];
+		if ($passcode == 'z39FimidbYKCxKDVerng') {
+			$this->linkedin->run_schedule();
+		}
+		else {
+			die();
+		}
 	} 
 
 }
