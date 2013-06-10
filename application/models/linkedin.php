@@ -184,6 +184,7 @@ class Linkedin extends CI_Model {
 							$linkedin_id = mysql_real_escape_string($person->id);
 							$fname = mysql_real_escape_string($person->{'first-name'});
 							$lname = mysql_real_escape_string($person->{'last-name'});
+							# remove notice for these fields because a decent amount of users dont have this set
 							@$location_name = mysql_real_escape_string($person->location->name);
 							@$location_code = mysql_real_escape_string($person->location->country->code);
 							
