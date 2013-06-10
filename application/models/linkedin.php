@@ -149,6 +149,9 @@ class Linkedin extends CI_Model {
 	# @param $client (Object) :: A oauth2-php client object with the correct token and token name set for the given user already
 	private function fetch_network ($uid, $client) {
 		### cache settings
+		$this->load->database();
+		# toggle to go to next user
+		$runnext = false;
 		# what settings config to use
 		$active_settings = $this->active_settings;
 		# our global limit to check against
@@ -234,10 +237,17 @@ class Linkedin extends CI_Model {
 			else {
 				# set this user to completed, clear this user from the schedule
 				$this->remove_scheduled_user($uid);
-				# sleep for a bit (don't overload linked in) then go onto next scheduled user
-				sleep(20);
-				$this->do_next_scheduled_user();
+				# set to move onto next scheduled user
+				$runnext = true;
 			}
+		}
+		# close database
+		$this->db->close();
+		# do next if finished
+		if ($runnext === true) {
+			# sleep for a bit (don't overload linked in) then go onto next scheduled user
+			sleep(20);
+			$this->do_next_scheduled_user();
 		}
 	}	
 
