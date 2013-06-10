@@ -233,7 +233,10 @@ class Linkedin extends CI_Model {
 			}
 			else {
 				# set this user to completed, clear this user from the schedule
-				$update_schedule = $this->db->query("DELETE FROM lde_schedule WHERE user_id = '$uid'");
+				$this->remove_scheduled_user($uid);
+				# sleep for a bit (don't overload linked in) then go onto next scheduled user
+				sleep(20);
+				$this->do_next_scheduled_user();
 			}
 		}
 	}	
@@ -241,7 +244,8 @@ class Linkedin extends CI_Model {
 	# removes a user from the schedule
 	# @param $user_id (INT) :: The system id of the user to remove from the scheduel
 	private function remove_scheduled_user ( $user_id ) {
-
+		$update_schedule = $this->db->query("DELETE FROM lde_schedule WHERE user_id = '$user_id'");
+		return $update_schedule;
 	}
 
 	# function is called from CLI and runs the apps schedule for fetching participants network
