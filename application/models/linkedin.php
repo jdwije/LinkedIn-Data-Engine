@@ -173,7 +173,7 @@ class Linkedin extends CI_Model {
 		if ($num_fetched_today < $limit) {
 			# make sure we  havent fetched all this users contacts already
 			if ($participant_fetch_total < $participant_network_total) {
-				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,location,positions)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
+				$network_xml = $client->fetch( 'https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,location,positions, num-connections)', array('start'=>$participant_fetch_total, 'count'=> $fetch_count) );
 				$network = simplexml_load_string($network_xml['result']);
 				$code = $network_xml['code'];
 				if ($code == 200) {
@@ -185,12 +185,13 @@ class Linkedin extends CI_Model {
 							$linkedin_id = mysql_real_escape_string($person->id);
 							$fname = mysql_real_escape_string($person->{'first-name'});
 							$lname = mysql_real_escape_string($person->{'last-name'});
+							$n_connections = mysql_real_escape_string($person->{'num-connections'});
 							# remove notice for these fields because a decent amount of users dont have this set
 							@$location_name = mysql_real_escape_string($person->location->name);
 							@$location_code = mysql_real_escape_string($person->location->country->code);
 							
 							# save person data
-							$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code') ");
+							$save_person = $this->db->query("INSERT INTO lde_network VALUES ('','$linkedin_id','$uid', '$fname','$lname','$location_name','$location_code', '$n_connections') ");
 
 							# get last inserted uid for this contact
 							$contact_uid = $this->db->insert_id();
