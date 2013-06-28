@@ -18,6 +18,7 @@ After you have setup your server...
 * cd to your http docs dir
 * clone https://github.com/jdwije/LinkedIn-Data-Engine.git
 * tailor the application/config/ config.php & database.php CI files to your environment
+* setup your mysql data base. you can import the lde.sql file to mirror the required table structures
 * schdule a cronjob like the one in the linux.cron file
 * share the link to your webserver and watch the data start flooding in!
 After you have some participants you can access php my admin via www.yoururl.com/lde to inspect your data (sorry no management interface yet). It is a smart idea to create a sepereate mysql database user with readonly privileges specifically for inspecting the database in order to avoid messing anything up whilst you're in there. 
