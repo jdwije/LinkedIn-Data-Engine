@@ -10,7 +10,7 @@ The LinkedIn Data Engine (LDE) was originally designed to gather linkedin networ
 LDE is developed with the CodeIgnighter (CI) PHP framework and is designed to run on a linux HTTP stack backed by a a MYSQL server. The way this app is structured is such that there is a client facing portion of the CI backed website, which handles authenticating participants, getting and storing their oauth tokens, and also presenting a nice show of face. There is also a restricted section of the CI website. This is intended to be called via a cronjob issuing a curl command with a post parameter *passcode* set in order to run the schedule. This way the app fetches data on whatever schedule you define in your crons. The *passcode* paramter is passed with the curl command to restrict the general public (including robots) from trigguring your app. With that lets move onto..
 
 ## Requirements
-A linux server with HTTP capabilities (I use Apache xx) and PHPxx, MYSQLxx, CURLxx, GIT installed.
+A linux server with HTTP capabilities (I use Apache), PHP 5+, MYSQL 5.5, CURL 7.27.0, and GIT installed. It might work with other versions of the aforementioned software however this is untested.
 With a few tweaks and mods you can run this from any sort of web stack that is php enabled...
 
 ## Installation (LINUX/GIT) and Usage
