@@ -226,12 +226,12 @@ class Linkedin extends CI_Model {
 				}
 				else if ($code == 403) {
 					# probably hit our data limit
-					echo "<h2>Data limit has been throttled for the day, resuming later. Code: $code</h2>";
+					echo "Data limit has been throttled for the day, resuming later. Code: $code";
 					die();
 				}
 				else {
 					# something else went wrong
-					echo "<h2>Something has gone wrong. Code: $code</h2>";
+					echo "Something has gone wrong. Code: $code";
 					die();
 				}
 			}
