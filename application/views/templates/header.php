@@ -27,6 +27,6 @@
  <body>
   <div class='container'>
     <!-- some initial related heading stuff -->
-    <h1 class='brand'>LinkedIn Data Miner</h1>
-    <p class='lead'>Welcome to the LinkedIn Data Mining application!</p>
+    <h1 class='brand'>LinkedIn Data Engine</h1>
+    <p class='lead'>Welcome to the <a href="https://github.com/jdwije/LinkedIn-Data-Engine/" target="_blank">LDE</a>, an open source data mining application for the linkedin platform.</p>
     <!-- Dynamic content begins here -->
