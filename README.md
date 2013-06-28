@@ -23,7 +23,6 @@ After you have setup your server...
 After you have some participants you can access php my admin via www.yoururl.com/lde to inspect your data (sorry no management interface yet). It is a smart idea to create a sepereate mysql database user with readonly privileges specifically for inspecting the database in order to avoid messing anything up whilst you're in there. 
 
 ## Licensing
-
 This software is lisenced under the MIT lisence by Jason Wijegooneratne & Philip Schneider. In a nutshell, feel free to hack away at and use this software just remember to include the original liscence somewhere in your code and give a shoutout to Phil and Myself. See the lde_user_license.txt file for a full description.
 
 
