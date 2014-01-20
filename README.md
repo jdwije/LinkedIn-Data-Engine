@@ -31,3 +31,7 @@ This software is lisenced under the MIT lisence by Jason Wijegooneratne & Philip
 
 
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jdwije/linkedin-data-engine/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
